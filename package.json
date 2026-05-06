@@ -1,0 +1,33 @@
+{
+  "name": "dashboard-pca-geral",
+  "version": "1.0.0",
+  "description": "Dashboard online em tempo real para análise de Planejamento Consolidado",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "test": "echo Abra o arquivo como documentado em README.md"
+  },
+  "keywords": [
+    "dashboard",
+    "pca",
+    "planejamento",
+    "tempo-real",
+    "google-sheets"
+  ],
+  "author": "Dashboard Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nzjunior2003-cyber/dashboardPCA"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

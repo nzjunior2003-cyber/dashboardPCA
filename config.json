@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "title": "Dashboard PCA Geral",
+  "description": "Dashboard online em tempo real para análise de Planejamento Consolidado",
+  "dataSource": {
+    "type": "google-sheet",
+    "sheetId": "1-XrRG5oLqrcMPLNHePm3KS4671vCp1r0",
+    "sheetName": "geral",
+    "refreshInterval": 60000,
+    "notes": "Para usar dados locais, faça upload de um CSV e altere o tipo para 'csv'"
+  },
+  "ui": {
+    "theme": "auto",
+    "sidebarCollapsible": false,
+    "defaultView": "visao"
+  },
+  "charts": {
+    "topItems": 10,
+    "topRanking": 30,
+    "chartHeight": 360
+  },
+  "filters": [
+    "search",
+    "origem",
+    "demandante",
+    "item",
+    "grupo",
+    "prioridade",
+    "fonte",
+    "contrato"
+  ],
+  "columns": {
+    "ordem": "ORDEM",
+    "origem": "ORIGEM",
+    "demandante": "DEMANDANTE",
+    "descricao": "DESCRIÇÃO",
+    "item": "ITEM",
+    "subitem": "SUBITEM",
+    "grupo": "GRUPO",
+    "quantidade": "QUANTIDADE",
+    "valorUnitario": "VALOR UNITÁRIO ESTIMADO ()",
+    "valorTotal": "VALOR TOTAL ESTIMADO ()",
+    "prioridade": "PRIORIDADE",
+    "dataDesejada": "DATA DESEJADA",
+    "contratoNovo": "CONTRATO NOVO",
+    "fonte": "FONTE DO RECURSO",
+    "valorRecurso": "VALOR DO RECURSO",
+    "pae": "Nº DO PAE"
+  }
+}
