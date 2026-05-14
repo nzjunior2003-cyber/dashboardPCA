@@ -23,6 +23,7 @@
     "search",
     "origem",
     "demandante",
+    "qdqq",
     "item",
     "grupo",
     "prioridade",
@@ -45,6 +46,7 @@
     "contratoNovo": "CONTRATO NOVO",
     "fonte": "FONTE DO RECURSO",
     "valorRecurso": "VALOR DO RECURSO",
-    "pae": "Nº DO PAE"
+    "pae": "Nº DO PAE",
+    "qdqq": "QDQQ"
   }
 }

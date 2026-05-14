@@ -1,11 +1,11 @@
-ORDEM,ORIGEM,DEMANDANTE,DESCRIÇÃO,ITEM,SUBITEM,GRUPO,QUANTIDADE,VALOR UNITÁRIO ESTIMADO (),VALOR TOTAL ESTIMADO (),PRIORIDADE,DATA DESEJADA,CONTRATO NOVO,FONTE DO RECURSO,VALOR DO RECURSO,Nº DO PAE
-1,TI,Departamento de Sistemas,Implementação de rede privada,Infraestrutura,Conectividade,Tecnologia,1,"R$ 50.000,00","R$ 50.000,00",Alta,Q1 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-001
-2,Administrativo,Gestão Administrativa,Reforma de salas administrativas,Infraestrutura,Predial,Administrativa,200,"R$ 1.500,00","R$ 300.000,00",Média,Q2 2025,Sim,Lei de Incentivos,"R$ 1.000.000,00",
-3,Financeiro,Departamento Financeiro,Auditoria externa anual,Serviços,Consultoria,Conformidade,1,"R$ 120.000,00","R$ 120.000,00",Alta,Q1 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-002
-4,TI,Help Desk,Upgrade de servidores,Infraestrutura,Hardware,Tecnologia,5,"R$ 45.000,00","R$ 225.000,00",Alta,Q2 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-003
-5,RH,Recursos Humanos,Treinamento de pessoal,Serviços,Capacitação,Desenvolvimento,150,"R$ 3.000,00","R$ 450.000,00",Média,Q1 2025,Não,FIES,"R$ 600.000,00",
-6,Operação,Coordenação Operacional,Compra de equipamentos,Bens,Equipamentos,Operação,20,"R$ 8.000,00","R$ 160.000,00",Baixa,Q3 2025,Sim,Orçamento 2025,"R$ 500.000,00",
-7,Administrativo,Diretoria,Consultoria estratégica,Serviços,Consultoria,Estratégia,1,"R$ 200.000,00","R$ 200.000,00",Alta,Q2 2025,Não,Lei de Incentivos,"R$ 1.000.000,00",PAE-004
-8,TI,Desenvolvimento,Migração para cloud,Infraestrutura,Serviços Cloud,Tecnologia,1,"R$ 180.000,00","R$ 180.000,00",Alta,Q1 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-005
-9,Operação,Manutenção,Manutenção preventiva,Serviços,Manutenção,Operação,12,"R$ 15.000,00","R$ 180.000,00",Média,Q2 2025,Não,Orçamento 2025,"R$ 500.000,00",
+ORDEM,ORIGEM,DEMANDANTE,DESCRIÇÃO,ITEM,SUBITEM,GRUPO,QDQQ,QUANTIDADE,VALOR UNITÁRIO ESTIMADO (),VALOR TOTAL ESTIMADO (),PRIORIDADE,DATA DESEJADA,CONTRATO NOVO,FONTE DO RECURSO,VALOR DO RECURSO,Nº DO PAE
+1,TI,Departamento de Sistemas,Implementação de rede privada,Infraestrutura,Conectividade,Tecnologia,QDQQ1,1,"R$ 50.000,00","R$ 50.000,00",Alta,Q1 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-001
+2,Administrativo,Gestão Administrativa,Reforma de salas administrativas,Infraestrutura,Predial,Administrativa,QDQQ2,200,"R$ 1.500,00","R$ 300.000,00",Média,Q2 2025,Sim,Lei de Incentivos,"R$ 1.000.000,00",
+3,Financeiro,Departamento Financeiro,Auditoria externa anual,Serviços,Consultoria,Conformidade,QDQQ3,1,"R$ 120.000,00","R$ 120.000,00",Alta,Q1 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-002
+4,TI,Help Desk,Upgrade de servidores,Infraestrutura,Hardware,Tecnologia,QDQQ1,5,"R$ 45.000,00","R$ 225.000,00",Alta,Q2 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-003
+5,RH,Recursos Humanos,Treinamento de pessoal,Serviços,Capacitação,Desenvolvimento,QDQQ4,150,"R$ 3.000,00","R$ 450.000,00",Média,Q1 2025,Não,FIES,"R$ 600.000,00",
+6,Operação,Coordenação Operacional,Compra de equipamentos,Bens,Equipamentos,Operação,QDQQ5,20,"R$ 8.000,00","R$ 160.000,00",Baixa,Q3 2025,Sim,Orçamento 2025,"R$ 500.000,00",
+7,Administrativo,Diretoria,Consultoria estratégica,Serviços,Consultoria,Estratégia,QDQQ2,1,"R$ 200.000,00","R$ 200.000,00",Alta,Q2 2025,Não,Lei de Incentivos,"R$ 1.000.000,00",PAE-004
+8,TI,Desenvolvimento,Migração para cloud,Infraestrutura,Serviços Cloud,Tecnologia,QDQQ1,1,"R$ 180.000,00","R$ 180.000,00",Alta,Q1 2025,Não,Orçamento 2025,"R$ 500.000,00",PAE-005
+9,Operação,Manutenção,Manutenção preventiva,Serviços,Manutenção,Operação,QDQQ5,12,"R$ 15.000,00","R$ 180.000,00",Média,Q2 2025,Não,Orçamento 2025,"R$ 500.000,00",
 10,Administrativo,Gestão Administrativa,Modernização de frota,Bens,Veículos,Administrativa,5,"R$ 120.000,00","R$ 600.000,00",Média,Q3 2025,Sim,Programas Federais,"R$ 2.000.000,00",
