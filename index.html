@@ -22,7 +22,24 @@
 .grid-two{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.grid-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.chart{height:360px}.table-wrap{overflow:auto;max-height:560px;border-radius:18px}table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.92rem}th{position:sticky;top:0;background:var(--color-surface-2);z-index:2}
 .badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:700}.alta{background:rgba(161,53,68,.13);color:#a13544}.media{background:rgba(209,153,0,.16);color:#8a5b00}.baixa{background:rgba(67,122,34,.14);color:#2e5c10}.small{font-size:.84rem;color:var(--color-text-muted)}
 .section{display:none}.section.active{display:grid;gap:18px}.timeline{display:grid;gap:12px}.timeline-row{display:grid;grid-template-columns:170px 1fr 120px;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface-2)}.bar{height:12px;border-radius:999px;background:var(--color-surface-offset);overflow:hidden}.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--color-primary),#8dc5ba)}
-@media (max-width:1080px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--color-border)}.cards,.grid-two,.grid-three{grid-template-columns:1fr}.timeline-row{grid-template-columns:1fr}.chart{height:320px}}
+
+/* ESTILOS DA JANELA FLUTUANTE (MODAL) E LINHAS CLICÁVEIS */
+tr.clickable { cursor: pointer; transition: background 0.2s; }
+tr.clickable:hover { background: var(--color-surface-offset); }
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; place-items: center; z-index: 1000; padding: 20px; opacity: 0; transition: opacity 0.2s ease-in-out; backdrop-filter: blur(4px); }
+.modal-overlay.open { display: grid; opacity: 1; }
+.modal-card { background: var(--color-surface); width: 100%; max-width: 700px; border-radius: var(--radius); padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto; }
+.modal-close { position: absolute; top: 20px; right: 20px; background: var(--color-surface-offset); border: 1px solid var(--color-border); width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; color: var(--color-text); display: grid; place-items: center; }
+.modal-close:hover { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+.modal-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 4px; padding-right: 30px; line-height: 1.2; }
+.modal-subtitle { color: var(--color-text-muted); margin: 0 0 24px; font-size: 0.95rem; display: flex; gap: 8px; align-items: center; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.modal-field { background: var(--color-bg); padding: 14px 18px; border-radius: 12px; border: 1px solid var(--color-border); }
+.modal-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+.modal-value { font-weight: 600; font-size: 1rem; color: var(--color-primary); }
+.modal-full { grid-column: 1 / -1; }
+
+@media (max-width:1080px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--color-border)}.cards,.grid-two,.grid-three{grid-template-columns:1fr}.timeline-row{grid-template-columns:1fr}.chart{height:320px}.modal-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -67,7 +84,7 @@
     <div id="paeChartContainer" style="display:none;">
       <article class="card pad"><div class="metric-label">Processos com PAE por Demandante</div><div id="chartPae" class="chart"></div></article>
     </div>
-    <article class="card pad"><div class="metric-label">Detalhamento filtrado</div><div class="table-wrap"><table><thead><tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr></thead><tbody id="tbody"></tbody></table></div></article>
+    <article class="card pad"><div class="metric-label">Detalhamento filtrado (Clique na linha para ver andamento)</div><div class="table-wrap"><table><thead><tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr></thead><tbody id="tbody"></tbody></table></div></article>
   </section>
   <section id="ranking" class="section">
     <div class="grid-two">
@@ -85,15 +102,41 @@
   </section>
 </main>
 </div>
+
+<div id="modalOverlay" class="modal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" id="closeModalBtn">×</button>
+    <div class="modal-title" id="mTitle">Carregando...</div>
+    <div class="modal-subtitle">
+      <span class="badge" id="mPaeBadge" style="background:var(--color-primary); color:#fff;">PAE: -</span>
+      <span id="mDemandante"></span>
+    </div>
+    <div class="modal-grid">
+      <div class="modal-field"><div class="modal-label">Fonte de Recurso</div><div class="modal-value" id="mFonte" style="color:var(--color-text)"></div></div>
+      <div class="modal-field"><div class="modal-label">Rito Processual</div><div class="modal-value" id="mRito"></div></div>
+      <div class="modal-field"><div class="modal-label">Setor Atual</div><div class="modal-value" id="mSetor"></div></div>
+      <div class="modal-field"><div class="modal-label">Última Tramitação</div><div class="modal-value" id="mTramitacao"></div></div>
+      <div class="modal-field modal-full"><div class="modal-label">Status / Andamento Atual</div><div class="modal-value" id="mAndamento"></div></div>
+    </div>
+  </div>
+</div>
+
 <script>
+// CONFIGURAÇÕES DA PLANILHA 1 (Geral)
 const SHEET_ID = '1-XrRG5oLqrcMPLNHePm3KS4671vCp1r0';
 const SHEET_NAME = 'geral';
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+// CONFIGURAÇÕES DA PLANILHA 2 (Andamentos)
+const SHEET_ID_2 = '1deakLqP8-enEgY384EkFyYedgo5WYSONjvYIBJDwqXE';
+const SHEET_NAME_2 = 'Processos 2026';
+const CSV_URL_2 = `https://docs.google.com/spreadsheets/d/${SHEET_ID_2}/export?format=csv&sheet=${encodeURIComponent(SHEET_NAME_2)}`;
+
 let rawData = [];
+let andamentosData = {}; // Guarda os andamentos cruzados pelo Nº do PAE
+
 const brl = new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'});
 const integer = new Intl.NumberFormat('pt-BR');
-
-// REMOVIDO 'origem' da lista
 const selects = ['demandante','qdqq','item','grupo','prioridade','fonte','contrato'];
 const fieldMap = {demandante:'demandante', qdqq:'data_desejada', item:'item', grupo:'grupo', prioridade:'prioridade', fonte:'fonte', contrato:'contrato_novo'};
 
@@ -106,35 +149,75 @@ function aggregate(data,key,mode='sum'){const m=new Map();data.forEach(r=>{const
 function quarterOrder(label){const s=norm(label);if(s.includes('1'))return 1;if(s.includes('2'))return 2;if(s.includes('3'))return 3;if(s.includes('4'))return 4;return 99;}
 
 async function loadLiveData(){
-    const res=await fetch(CSV_URL+'&t='+Date.now());
-    const text=await res.text();
-    const rows=csvToRows(text);
-    const headers=rows[0].map(cleanCol);
-    rawData=rows.slice(1).map(r=>Object.fromEntries(headers.map((h,i)=>[h,(r[i]||'').trim()]))).map(r=>({
-        ordem:Number(r['ORDEM'])||null,
-        origem:r['ORIGEM']||'',
-        demandante:r['DEMANDANTE']||'',
-        item:r['ITEM']||'',
-        subitem:r['SUBITEM']||'',
-        grupo:r['GRUPO']||'',
-        descricao:r['DESCRIÇÃO']||'',
-        quantidade:r['QUANTIDADE']||'',
-        valor_unitario:r['VALOR UNITÁRIO ESTIMADO ()']||'',
+    try {
+        // Busca as DUAS planilhas ao mesmo tempo!
+        const [resGeral, resAndamentos] = await Promise.all([
+            fetch(CSV_URL+'&t='+Date.now()),
+            fetch(CSV_URL_2+'&t='+Date.now())
+        ]);
         
-        // CORREÇÃO: O valor numérico usado para os gráficos agora lê direto da Coluna O ("VALOR DO RECURSO")
-        valor_total:r['VALOR DO RECURSO']||'',
-        valor_total_num:moneyToFloat(r['VALOR DO RECURSO']),
+        const textGeral = await resGeral.text();
+        const textAndamentos = await resAndamentos.text();
+
+        // 1. Processar Planilha de Andamentos (Aba "Processos 2026")
+        const rowsAndamentos = csvToRows(textAndamentos);
+        const headAndamentos = rowsAndamentos[0].map(h => cleanCol(h).toUpperCase());
         
-        prioridade:r['PRIORIDADE']||'',
-        data_desejada:r['DATA DESEJADA']||'',
-        contrato_novo:r['CONTRATO NOVO']||'',
-        fonte:r['FONTE DO RECURSO']||'',
-        valor_recurso:r['VALOR DO RECURSO']||'',
-        pae:r['Nº DO PAE']||''
-    }));
-    fillFilters();
-    document.getElementById('updatedInfo').textContent='Última atualização: '+new Date().toLocaleString('pt-BR');
-    update();
+        // Identificar dinamicamente em que coluna estão as informações
+        const idxPae = headAndamentos.findIndex(h => h.includes('PAE'));
+        const idxRito = headAndamentos.findIndex(h => h.includes('RITO'));
+        const idxSetor = headAndamentos.findIndex(h => h.includes('SETOR') || h.includes('LOCAL'));
+        const idxAndamento = headAndamentos.findIndex(h => h.includes('ANDAMENTO') || h.includes('STATUS'));
+        
+        // CORREÇÃO: Assegurar a leitura infalível da "ÚLTIMA TRAMITAÇÃO" (Coluna T)
+        const idxUltima = headAndamentos.findIndex(h => h.includes('TRAMITAÇÃO') || h.includes('TRAMITACAO') || h.includes('ÚLTIMA') || h.includes('ULTIMA'));
+
+        andamentosData = {}; // Limpar histórico anterior
+        for(let i=1; i<rowsAndamentos.length; i++){
+            const row = rowsAndamentos[i];
+            if(!row || row.length === 0) continue;
+            
+            const paeLimpo = idxPae >= 0 ? (row[idxPae] || '').trim() : '';
+            if(paeLimpo) {
+                andamentosData[paeLimpo] = {
+                    rito: idxRito >= 0 ? (row[idxRito]||'').trim() || 'Não preenchido' : 'Coluna Rito não encontrada',
+                    setor: idxSetor >= 0 ? (row[idxSetor]||'').trim() || 'Não preenchido' : 'Coluna Setor não encontrada',
+                    andamento: idxAndamento >= 0 ? (row[idxAndamento]||'').trim() || 'Sem andamentos' : 'Coluna Andamento não encontrada',
+                    ultima: idxUltima >= 0 ? (row[idxUltima]||'').trim() || 'Sem registo' : 'Coluna Tramitação não encontrada'
+                };
+            }
+        }
+
+        // 2. Processar Planilha Geral
+        const rowsGeral = csvToRows(textGeral);
+        const headersGeral = rowsGeral[0].map(cleanCol);
+        rawData = rowsGeral.slice(1).map(r=>Object.fromEntries(headersGeral.map((h,i)=>[h,(r[i]||'').trim()]))).map(r=>({
+            ordem:Number(r['ORDEM'])||null,
+            origem:r['ORIGEM']||'',
+            demandante:r['DEMANDANTE']||'',
+            item:r['ITEM']||'',
+            subitem:r['SUBITEM']||'',
+            grupo:r['GRUPO']||'',
+            descricao:r['DESCRIÇÃO']||'',
+            quantidade:r['QUANTIDADE']||'',
+            valor_unitario:r['VALOR UNITÁRIO ESTIMADO ()']||'',
+            valor_total:r['VALOR DO RECURSO']||'',
+            valor_total_num:moneyToFloat(r['VALOR DO RECURSO']),
+            prioridade:r['PRIORIDADE']||'',
+            data_desejada:r['DATA DESEJADA']||'',
+            contrato_novo:r['CONTRATO NOVO']||'',
+            fonte:r['FONTE DO RECURSO']||'',
+            valor_recurso:r['VALOR DO RECURSO']||'',
+            pae:r['Nº DO PAE']||''
+        }));
+
+        fillFilters();
+        document.getElementById('updatedInfo').textContent='Última atualização: '+new Date().toLocaleString('pt-BR');
+        update();
+    } catch(erro) {
+        console.error("Erro ao carregar dados:", erro);
+        document.getElementById('updatedInfo').textContent='Erro na conexão. Tentando novamente...';
+    }
 }
 
 function fillFilters() {
@@ -142,11 +225,9 @@ function fillFilters() {
     const key = fieldMap[id];
     const el = document.getElementById(id);
     const current = el.value;
-    
     const vals = id === 'qdqq' 
       ? ['Todos', '1º QDQQ', '2º QDQQ', '3º QDQQ', 'NÃO PREVISTO'] 
       : ['Todos', ...Array.from(new Set(rawData.map(d => (d[key] || '').trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
-      
     el.innerHTML = vals.map(v => `<option value="${v}">${v}</option>`).join('');
     if (vals.includes(current)) el.value = current;
   });
@@ -163,7 +244,6 @@ function getFiltered(){
         if(document.getElementById('fonte').value!=='Todos'&&r.fonte!==document.getElementById('fonte').value)return false;
         if(document.getElementById('contrato').value!=='Todos'&&r.contrato_novo!==document.getElementById('contrato').value)return false;
         if(q){
-            // REMOVIDO r.origem da busca global
             const hay=norm([r.descricao,r.demandante,r.pae,r.grupo,r.item,r.data_desejada].join(' '));
             if(!hay.includes(q))return false;
         }
@@ -176,8 +256,6 @@ function baseLayout(){return {paper_bgcolor:'transparent',plot_bgcolor:'transpar
 function renderCharts(data){
     const cor=getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
     const colors=[cor,'#d19900','#a13544','#437a22','#006494','#7a39bb','#da7101','#4f98a3'];
-    
-    // Gráfico de Origem Removido. Fonte subiu para o lugar dele e herdou a cor principal.
     const fonte=aggregate(data,'fonte').slice(0,8);Plotly.newPlot('chartFonte',[{type:'bar',x:fonte.map(d=>d.value).reverse(),y:fonte.map(d=>d.label).reverse(),orientation:'h',marker:{color:cor}}],{...baseLayout(),margin:{l:130,r:10,t:10,b:40}},{displayModeBar:false,responsive:true});
     const prior=aggregate(data,'prioridade','count');Plotly.newPlot('chartPrioridade',[{type:'pie',labels:prior.map(d=>d.label),values:prior.map(d=>d.value),hole:.55,textinfo:'label+percent',marker:{colors}}],{...baseLayout(),margin:{l:10,r:10,t:10,b:10}},{displayModeBar:false,responsive:true});
     const item=aggregate(data,'item').slice(0,8);Plotly.newPlot('chartItem',[{type:'bar',x:item.map(d=>d.label),y:item.map(d=>d.value),marker:{color:colors[1]}}],{...baseLayout(),xaxis:{tickangle:-25}},{displayModeBar:false,responsive:true});
@@ -186,16 +264,66 @@ function renderCharts(data){
     const desc=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).slice(0,12);Plotly.newPlot('chartDescricao',[{type:'bar',x:desc.map(d=>d.valor_total_num).reverse(),y:desc.map(d=>d.descricao.slice(0,34)).reverse(),orientation:'h',marker:{color:colors[2]}}],{...baseLayout(),margin:{l:180,r:10,t:10,b:40}},{displayModeBar:false,responsive:true});
     const periodo=aggregate(data,'data_desejada').sort((a,b)=>quarterOrder(a.label)-quarterOrder(b.label));Plotly.newPlot('chartPeriodo',[{type:'bar',x:periodo.map(d=>d.label),y:periodo.map(d=>d.value),marker:{color:colors[5]}}],{...baseLayout()},{displayModeBar:false,responsive:true});
     const periodoQtd=aggregate(data,'data_desejada','count').sort((a,b)=>quarterOrder(a.label)-quarterOrder(b.label));Plotly.newPlot('chartPeriodoQtd',[{type:'scatter',mode:'lines+markers',x:periodoQtd.map(d=>d.label),y:periodoQtd.map(d=>d.value),line:{color:colors[6],width:4},marker:{size:10}}],{...baseLayout()},{displayModeBar:false,responsive:true});
-    
-    // Gráfico do PAE mantido
     const demandanteSelecionado = document.getElementById('demandante').value;if(demandanteSelecionado !== 'Todos'){const paeData = data.filter(r => r.demandante === demandanteSelecionado);const comPae = paeData.filter(r => (r.pae || '').trim() !== '').length;const semPae = paeData.length - comPae;Plotly.newPlot('chartPae',[{type:'pie',labels:['Com PAE', 'Sem PAE'],values:[comPae, semPae],textinfo:'label+value',marker:{colors:[colors[0], colors[1]]}}],{...baseLayout(),margin:{l:10,r:10,t:10,b:10}},{displayModeBar:false,responsive:true});document.getElementById('paeChartContainer').style.display = 'grid';}else{document.getElementById('paeChartContainer').style.display = 'none';}
 }
 
-function renderTable(data){document.getElementById('tbody').innerHTML=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).map(r=>`<tr><td>${r.ordem??''}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td><td>${r.item}</td><td>${r.grupo}</td><td><span class="badge ${priorityClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td><td>${r.data_desejada}</td><td>${money(r.valor_total_num)}</td><td>${r.pae}</td></tr>`).join('');}
+// FUNÇÃO GLOBAL PARA ABRIR O MODAL
+window.abrirModalProcesso = function(pae, fonte, descricao, demandante) {
+    let dadosExtra = { rito: 'Aguardando criação do PAE', setor: '-', andamento: 'Sem processo vinculado', ultima: '-' };
+    
+    if(pae && pae.trim() !== '') {
+        if(andamentosData[pae]) {
+            dadosExtra = andamentosData[pae];
+        } else {
+            dadosExtra = { rito: 'Não localizado na planilha 2026', setor: 'Não localizado', andamento: 'Andamento não registrado', ultima: 'N/A' };
+        }
+    }
+
+    document.getElementById('mTitle').textContent = descricao || 'Descrição não informada';
+    document.getElementById('mPaeBadge').textContent = (pae && pae.trim() !== '') ? `PAE: ${pae}` : 'PAE: Não Gerado';
+    document.getElementById('mDemandante').textContent = demandante || '';
+    
+    document.getElementById('mFonte').textContent = fonte || 'Não informada';
+    document.getElementById('mRito').textContent = dadosExtra.rito;
+    document.getElementById('mSetor').textContent = dadosExtra.setor;
+    document.getElementById('mTramitacao').textContent = dadosExtra.ultima;
+    document.getElementById('mAndamento').textContent = dadosExtra.andamento;
+
+    document.getElementById('modalOverlay').classList.add('open');
+};
+
+function renderTable(data){
+    document.getElementById('tbody').innerHTML=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).map(r=>{
+        const safePae = (r.pae||'').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeFonte = (r.fonte||'').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeDesc = (r.descricao||'').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeDem = (r.demandante||'').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        
+        return `<tr class="clickable" onclick="abrirModalProcesso('${safePae}', '${safeFonte}', '${safeDesc}', '${safeDem}')">
+            <td>${r.ordem??''}</td>
+            <td>${r.demandante}</td>
+            <td><strong>${r.descricao}</strong></td>
+            <td>${r.item}</td>
+            <td>${r.grupo}</td>
+            <td><span class="badge ${priorityClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td>
+            <td>${r.data_desejada}</td>
+            <td>${money(r.valor_total_num)}</td>
+            <td><strong>${r.pae || '-'}</strong></td>
+        </tr>`;
+    }).join('');
+}
+
 function renderRanking(data){document.getElementById('rankingBody').innerHTML=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).slice(0,30).map((r,i)=>`<tr><td>${i+1}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td><td><span class="badge ${priorityClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td><td>${money(r.valor_total_num)}</td><td>${r.pae}</td></tr>`).join('');}
 function renderTimeline(data){const periodos=aggregate(data,'data_desejada').sort((a,b)=>quarterOrder(a.label)-quarterOrder(b.label));const max=Math.max(...periodos.map(d=>d.value),1);document.getElementById('timeline').innerHTML=periodos.map(d=>`<div class="timeline-row"><div><strong>${d.label}</strong></div><div class="bar"><span style="width:${(d.value/max)*100}%"></span></div><div>${money(d.value)}</div></div>`).join('');}
 function update(){const data=getFiltered();renderKPIs(data);renderCharts(data);renderTable(data);renderRanking(data);renderTimeline(data);}
-['search',...selects].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',update));document.getElementById('resetBtn').addEventListener('click',()=>{document.getElementById('search').value='';selects.forEach(id=>document.getElementById(id).value='Todos');update();});document.getElementById('themeBtn').addEventListener('click',()=>{const root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='dark'?'light':'dark');update();});document.getElementById('refreshBtn').addEventListener('click',loadLiveData);document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');}));if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.setAttribute('data-theme','dark');loadLiveData();setInterval(loadLiveData,60000);
+['search',...selects].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',update));document.getElementById('resetBtn').addEventListener('click',()=>{document.getElementById('search').value='';selects.forEach(id=>document.getElementById(id).value='Todos');update();});document.getElementById('themeBtn').addEventListener('click',()=>{const root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='dark'?'light':'dark');update();});document.getElementById('refreshBtn').addEventListener('click',loadLiveData);document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');}));if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.setAttribute('data-theme','dark');
+
+// Lógica de fechar o Modal
+document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('modalOverlay').classList.remove('open'); });
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target === this) this.classList.remove('open'); });
+
+loadLiveData();
+setInterval(loadLiveData,60000);
 </script>
 </body>
 </html>
