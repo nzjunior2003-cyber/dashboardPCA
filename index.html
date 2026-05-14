@@ -16,15 +16,17 @@
 body{font-family:Inter,system-ui,sans-serif;background:var(--color-bg);color:var(--color-text);font-size:16px;line-height:1.5; zoom: 75%; margin:0;}
 button,input,select{font:inherit}
 
-/* Menu lateral aumentado para 340px */
+/* Menu lateral aumentado para 340px e barra de rolagem oculta */
 .app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
-.sidebar{background:linear-gradient(180deg,var(--color-surface),var(--color-surface-2));border-right:1px solid var(--color-border);padding:24px;position:sticky;top:0;height:100vh;overflow:auto}
-.brand{display:flex;gap:12px;align-items:center;margin-bottom:20px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--color-primary),#8dc5ba);display:grid;place-items:center;color:#fff;font-weight:800}.brand h1{margin:0;font-size:1.1rem}.brand p{margin:2px 0 0;color:var(--color-text-muted);font-size:.9rem}
-.nav{display:grid;gap:8px;margin:10px 0 20px}.nav button{text-align:left;padding:12px 14px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface);color:var(--color-text);cursor:pointer}.nav button.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
+.sidebar{background:linear-gradient(180deg,var(--color-surface),var(--color-surface-2));border-right:1px solid var(--color-border);padding:16px 24px;position:sticky;top:0;height:100vh;overflow-y:auto; -ms-overflow-style:none; scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--color-primary),#8dc5ba);display:grid;place-items:center;color:#fff;font-weight:800}.brand h1{margin:0;font-size:1.1rem}.brand p{margin:2px 0 0;color:var(--color-text-muted);font-size:.9rem}
+.nav{display:grid;gap:6px;margin:8px 0 16px}.nav button{text-align:left;padding:8px 14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);color:var(--color-text);cursor:pointer}.nav button.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
 
-/* Gaps ajustados para caber tudo sem scroll */
-.filter-panel{display:grid;gap:12px}.field label{display:block;font-size:.82rem;font-weight:700;margin:0 0 4px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.04em}.select,.search{width:100%;padding:10px 14px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg);color:var(--color-text)}
-.actions{display:flex;gap:10px;flex-wrap:wrap; margin-top: 8px;}.btn{padding:11px 14px;border-radius:12px;border:1px solid var(--color-border);background:var(--color-surface);color:var(--color-text);cursor:pointer}.btn.primary{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
+/* Gaps verticais ajustados para não dar scroll */
+.filter-panel{display:grid;gap:8px}.field label{display:block;font-size:.78rem;font-weight:700;margin:0 0 2px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.04em}.select,.search{width:100%;padding:8px 12px;border:1px solid var(--color-border);border-radius:10px;background:var(--color-bg);color:var(--color-text)}
+.actions{display:flex;gap:8px;flex-wrap:wrap; margin-top: 4px;}.btn{padding:8px 12px;border-radius:10px;border:1px solid var(--color-border);background:var(--color-surface);color:var(--color-text);cursor:pointer}.btn.primary{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
+
 .main{padding:24px;display:grid;gap:18px}.topbar{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}.title h2{margin:0;font-size:1.85rem}.title p{margin:6px 0 0;color:var(--color-text-muted)}
 .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius)}.pad{padding:18px}.metric-label{color:var(--color-text-muted);font-size:.84rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}.metric-value{font-size:1.9rem;font-weight:800;margin-top:8px}.metric-sub{margin-top:6px;color:var(--color-text-muted);font-size:.92rem}
 .grid-two{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.grid-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.chart{height:360px}.table-wrap{overflow:auto;max-height:560px;border-radius:18px}table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.92rem}th{position:sticky;top:0;background:var(--color-surface-2);z-index:2}
@@ -59,7 +61,7 @@ tr.clickable:hover { background: var(--color-surface-offset); }
     <button data-view="ranking">Ranking</button>
   </div>
   <div class="filter-panel">
-    <div class="field" style="margin-bottom: 8px;">
+    <div class="field" style="margin-bottom: 4px;">
       <label style="color: var(--color-primary);">Status do PAE</label>
       <select id="pae_status" class="select" style="border: 2px solid var(--color-primary); font-weight: 600;"></select>
     </div>
@@ -162,7 +164,6 @@ async function loadLiveData(){
         const textGeral = await resGeral.text();
         const textAndamentos = await resAndamentos.text();
 
-        // 1. Processar Planilha de Andamentos (Aba "Processos 2026")
         const rowsAndamentos = csvToRows(textAndamentos);
         const headAndamentos = rowsAndamentos[0].map(h => cleanCol(h).toUpperCase());
         
@@ -188,7 +189,6 @@ async function loadLiveData(){
             }
         }
 
-        // 2. Processar Planilha Geral
         const rowsGeral = csvToRows(textGeral);
         const headersGeral = rowsGeral[0].map(cleanCol);
         rawData = rowsGeral.slice(1).map(r=>Object.fromEntries(headersGeral.map((h,i)=>[h,(r[i]||'').trim()]))).map(r=>({
@@ -270,7 +270,6 @@ function renderCharts(data){
     const colors=[cor,'#d19900','#a13544','#437a22','#006494','#7a39bb','#da7101','#4f98a3'];
     const fonte=aggregate(data,'fonte').slice(0,8);Plotly.newPlot('chartFonte',[{type:'bar',x:fonte.map(d=>d.value).reverse(),y:fonte.map(d=>d.label).reverse(),orientation:'h',marker:{color:cor}}],{...baseLayout(),margin:{l:130,r:10,t:10,b:40}},{displayModeBar:false,responsive:true});
     
-    // NOVO GRÁFICO DE STATUS DO PAE
     const paeCountChart = data.filter(r => (r.pae || '').trim() !== '').length;
     const noPaeCountChart = data.length - paeCountChart;
     Plotly.newPlot('chartStatusPae',[{type:'pie',labels:['Identificados', 'Sem identificação'],values:[paeCountChart, noPaeCountChart],hole:.55,textinfo:'label+percent',marker:{colors:[colors[0], colors[1]]}}],{...baseLayout(),margin:{l:10,r:10,t:10,b:10}},{displayModeBar:false,responsive:true});
@@ -283,7 +282,6 @@ function renderCharts(data){
     const demandanteSelecionado = document.getElementById('demandante').value;if(demandanteSelecionado !== 'Todos'){const paeData = data.filter(r => r.demandante === demandanteSelecionado);const comPae = paeData.filter(r => (r.pae || '').trim() !== '').length;const semPae = paeData.length - comPae;Plotly.newPlot('chartPae',[{type:'pie',labels:['Com PAE', 'Sem PAE'],values:[comPae, semPae],textinfo:'label+value',marker:{colors:[colors[0], colors[1]]}}],{...baseLayout(),margin:{l:10,r:10,t:10,b:10}},{displayModeBar:false,responsive:true});document.getElementById('paeChartContainer').style.display = 'grid';}else{document.getElementById('paeChartContainer').style.display = 'none';}
 }
 
-// FUNÇÃO GLOBAL PARA ABRIR O MODAL
 window.abrirModalProcesso = function(pae, fonte, descricao, demandante) {
     let dadosExtra = { rito: 'Aguardando criação do PAE', setor: '-', andamento: 'Sem processo vinculado', ultima: '-' };
     
