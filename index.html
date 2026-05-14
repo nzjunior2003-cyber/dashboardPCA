@@ -9,9 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
+/* Adicionado zoom: 75% no body para caber na tela */
 :root,[data-theme="light"]{--color-bg:#f7f6f2;--color-surface:#f9f8f5;--color-surface-2:#fbfbf9;--color-surface-offset:#f3f0ec;--color-border:#d4d1ca;--color-text:#28251d;--color-text-muted:#6f6c66;--color-primary:#01696f;--radius:18px}
 [data-theme="dark"]{--color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#201f1d;--color-surface-offset:#262320;--color-border:#393836;--color-text:#e4e0d7;--color-text-muted:#aaa59d;--color-primary:#4f98a3}
-*{box-sizing:border-box}html,body{margin:0}body{font-family:Inter,system-ui,sans-serif;background:var(--color-bg);color:var(--color-text);font-size:16px;line-height:1.5}button,input,select{font:inherit}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,sans-serif;background:var(--color-bg);color:var(--color-text);font-size:16px;line-height:1.5; zoom: 75%; margin:0;}
+button,input,select{font:inherit}
 .app{display:grid;grid-template-columns:290px 1fr;min-height:100vh}.sidebar{background:linear-gradient(180deg,var(--color-surface),var(--color-surface-2));border-right:1px solid var(--color-border);padding:24px;position:sticky;top:0;height:100vh;overflow:auto}
 .brand{display:flex;gap:12px;align-items:center;margin-bottom:24px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--color-primary),#8dc5ba);display:grid;place-items:center;color:#fff;font-weight:800}.brand h1{margin:0;font-size:1.1rem}.brand p{margin:2px 0 0;color:var(--color-text-muted);font-size:.9rem}
 .nav{display:grid;gap:8px;margin:18px 0 20px}.nav button{text-align:left;padding:12px 14px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface);color:var(--color-text);cursor:pointer}.nav button.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
@@ -21,7 +24,7 @@
 .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius)}.pad{padding:18px}.metric-label{color:var(--color-text-muted);font-size:.84rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}.metric-value{font-size:1.9rem;font-weight:800;margin-top:8px}.metric-sub{margin-top:6px;color:var(--color-text-muted);font-size:.92rem}
 .grid-two{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.grid-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.chart{height:360px}.table-wrap{overflow:auto;max-height:560px;border-radius:18px}table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.92rem}th{position:sticky;top:0;background:var(--color-surface-2);z-index:2}
 .badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:700}.alta{background:rgba(161,53,68,.13);color:#a13544}.media{background:rgba(209,153,0,.16);color:#8a5b00}.baixa{background:rgba(67,122,34,.14);color:#2e5c10}.small{font-size:.84rem;color:var(--color-text-muted)}
-.section{display:none}.section.active{display:grid;gap:18px}.timeline{display:grid;gap:12px}.timeline-row{display:grid;grid-template-columns:170px 1fr 120px;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--color-border);border-radius:14px;background:var(--color-surface-2)}.bar{height:12px;border-radius:999px;background:var(--color-surface-offset);overflow:hidden}.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--color-primary),#8dc5ba)}
+.section{display:none}.section.active{display:grid;gap:18px}
 
 /* ESTILOS DA JANELA FLUTUANTE (MODAL) E LINHAS CLICÁVEIS */
 tr.clickable { cursor: pointer; transition: background 0.2s; }
@@ -39,7 +42,7 @@ tr.clickable:hover { background: var(--color-surface-offset); }
 .modal-value { font-weight: 600; font-size: 1rem; color: var(--color-primary); }
 .modal-full { grid-column: 1 / -1; }
 
-@media (max-width:1080px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--color-border)}.cards,.grid-two,.grid-three{grid-template-columns:1fr}.timeline-row{grid-template-columns:1fr}.chart{height:320px}.modal-grid{grid-template-columns:1fr;}}
+@media (max-width:1080px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--color-border)}.cards,.grid-two,.grid-three{grid-template-columns:1fr}.chart{height:320px}.modal-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -49,8 +52,7 @@ tr.clickable:hover { background: var(--color-surface-offset); }
   <div class="nav">
     <button class="active" data-view="visao">Visão geral</button>
     <button data-view="ranking">Ranking</button>
-    <button data-view="cronograma">Cronograma</button>
-  </div>
+    </div>
   <div class="filter-panel">
     <div class="field"><label>Busca</label><input id="search" class="search" placeholder="Descrição, demandante, PAE..."></div>
     <div class="field"><label>Demandante</label><select id="demandante" class="select"></select></div>
@@ -59,7 +61,7 @@ tr.clickable:hover { background: var(--color-surface-offset); }
     <div class="field"><label>Grupo</label><select id="grupo" class="select"></select></div>
     <div class="field"><label>Prioridade</label><select id="prioridade" class="select"></select></div>
     <div class="field"><label>Fonte do recurso</label><select id="fonte" class="select"></select></div>
-    <div class="field"><label>Contrato novo</label><select id="contrato" class="select"></select></div>
+    <div class="field"><label>Status do PAE</label><select id="pae_status" class="select"></select></div>
     <div class="actions"><button class="btn primary" id="refreshBtn">Atualizar agora</button><button class="btn" id="resetBtn">Limpar filtros</button><button class="btn" id="themeBtn">Tema</button></div>
     <div class="small" id="liveStatus">Modo ao vivo habilitado, recarga automática a cada 60 segundos.</div>
   </div>
@@ -93,14 +95,7 @@ tr.clickable:hover { background: var(--color-surface-offset); }
     </div>
     <article class="card pad"><div class="metric-label">Maiores valores</div><div class="table-wrap"><table><thead><tr><th>Posição</th><th>Demandante</th><th>Descrição</th><th>Prioridade</th><th>Valor do recurso</th><th>PAE</th></tr></thead><tbody id="rankingBody"></tbody></table></div></article>
   </section>
-  <section id="cronograma" class="section">
-    <div class="grid-two">
-      <article class="card pad"><div class="metric-label">Valor por período desejado</div><div id="chartPeriodo" class="chart"></div></article>
-      <article class="card pad"><div class="metric-label">Itens por período</div><div id="chartPeriodoQtd" class="chart"></div></article>
-    </div>
-    <article class="card pad"><div class="metric-label">Linha do tempo operacional</div><div id="timeline" class="timeline"></div></article>
-  </section>
-</main>
+  </main>
 </div>
 
 <div id="modalOverlay" class="modal-overlay">
@@ -137,8 +132,8 @@ let andamentosData = {}; // Guarda os andamentos cruzados pelo Nº do PAE
 
 const brl = new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'});
 const integer = new Intl.NumberFormat('pt-BR');
-const selects = ['demandante','qdqq','item','grupo','prioridade','fonte','contrato'];
-const fieldMap = {demandante:'demandante', qdqq:'data_desejada', item:'item', grupo:'grupo', prioridade:'prioridade', fonte:'fonte', contrato:'contrato_novo'};
+const selects = ['demandante','qdqq','item','grupo','prioridade','fonte','pae_status'];
+const fieldMap = {demandante:'demandante', qdqq:'data_desejada', item:'item', grupo:'grupo', prioridade:'prioridade', fonte:'fonte'};
 
 function csvToRows(text){const rows=[];let row=[],cur='',q=false;for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c==='"'){if(q&&n==='"'){cur+='"';i++;}else q=!q;}else if(c===','&&!q){row.push(cur);cur='';}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cur);if(row.some(x=>x!==''))rows.push(row);row=[];cur='';}else cur+=c;}if(cur.length||row.length){row.push(cur);rows.push(row);}return rows;}
 function cleanCol(c){return (c||'').replace(/\n/g,' ').replace(/\s+/g,' ').trim();}
@@ -146,11 +141,9 @@ function moneyToFloat(v){if(!v)return 0;const s=String(v).replace(/R\$/g,'').rep
 function norm(s){return (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
 function money(v){return brl.format(v||0);} function priorityClass(v){const t=norm(v);if(t==='alta')return 'alta';if(t==='media'||t==='média')return 'media';return 'baixa';}
 function aggregate(data,key,mode='sum'){const m=new Map();data.forEach(r=>{const k=(r[key]||'Não informado').trim()||'Não informado';m.set(k,(m.get(k)||0)+(mode==='sum'?(r.valor_total_num||0):1));});return Array.from(m.entries()).map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value);}
-function quarterOrder(label){const s=norm(label);if(s.includes('1'))return 1;if(s.includes('2'))return 2;if(s.includes('3'))return 3;if(s.includes('4'))return 4;return 99;}
 
 async function loadLiveData(){
     try {
-        // Busca as DUAS planilhas ao mesmo tempo!
         const [resGeral, resAndamentos] = await Promise.all([
             fetch(CSV_URL+'&t='+Date.now()),
             fetch(CSV_URL_2+'&t='+Date.now())
@@ -163,16 +156,13 @@ async function loadLiveData(){
         const rowsAndamentos = csvToRows(textAndamentos);
         const headAndamentos = rowsAndamentos[0].map(h => cleanCol(h).toUpperCase());
         
-        // Identificar dinamicamente em que coluna estão as informações
         const idxPae = headAndamentos.findIndex(h => h.includes('PAE'));
         const idxRito = headAndamentos.findIndex(h => h.includes('RITO'));
         const idxSetor = headAndamentos.findIndex(h => h.includes('SETOR') || h.includes('LOCAL'));
         const idxAndamento = headAndamentos.findIndex(h => h.includes('ANDAMENTO') || h.includes('STATUS'));
-        
-        // CORREÇÃO: Assegurar a leitura infalível da "ÚLTIMA TRAMITAÇÃO" (Coluna T)
         const idxUltima = headAndamentos.findIndex(h => h.includes('TRAMITAÇÃO') || h.includes('TRAMITACAO') || h.includes('ÚLTIMA') || h.includes('ULTIMA'));
 
-        andamentosData = {}; // Limpar histórico anterior
+        andamentosData = {}; 
         for(let i=1; i<rowsAndamentos.length; i++){
             const row = rowsAndamentos[i];
             if(!row || row.length === 0) continue;
@@ -222,12 +212,19 @@ async function loadLiveData(){
 
 function fillFilters() {
   selects.forEach(id => {
-    const key = fieldMap[id];
     const el = document.getElementById(id);
     const current = el.value;
-    const vals = id === 'qdqq' 
-      ? ['Todos', '1º QDQQ', '2º QDQQ', '3º QDQQ', 'NÃO PREVISTO'] 
-      : ['Todos', ...Array.from(new Set(rawData.map(d => (d[key] || '').trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
+    let vals = [];
+
+    if (id === 'qdqq') {
+        vals = ['Todos', '1º QDQQ', '2º QDQQ', '3º QDQQ', 'NÃO PREVISTO'];
+    } else if (id === 'pae_status') {
+        vals = ['Todos', 'Identificados', 'Sem identificação'];
+    } else {
+        const key = fieldMap[id];
+        vals = ['Todos', ...Array.from(new Set(rawData.map(d => (d[key] || '').trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
+    }
+      
     el.innerHTML = vals.map(v => `<option value="${v}">${v}</option>`).join('');
     if (vals.includes(current)) el.value = current;
   });
@@ -242,7 +239,13 @@ function getFiltered(){
         if(document.getElementById('grupo').value!=='Todos'&&r.grupo!==document.getElementById('grupo').value)return false;
         if(document.getElementById('prioridade').value!=='Todos'&&r.prioridade!==document.getElementById('prioridade').value)return false;
         if(document.getElementById('fonte').value!=='Todos'&&r.fonte!==document.getElementById('fonte').value)return false;
-        if(document.getElementById('contrato').value!=='Todos'&&r.contrato_novo!==document.getElementById('contrato').value)return false;
+        
+        // Lógica exclusiva do Filtro de Status do PAE
+        const paeFilter = document.getElementById('pae_status').value;
+        const temPae = (r.pae || '').trim() !== '';
+        if(paeFilter === 'Identificados' && !temPae) return false;
+        if(paeFilter === 'Sem identificação' && temPae) return false;
+
         if(q){
             const hay=norm([r.descricao,r.demandante,r.pae,r.grupo,r.item,r.data_desejada].join(' '));
             if(!hay.includes(q))return false;
@@ -262,8 +265,6 @@ function renderCharts(data){
     const grupo=aggregate(data,'grupo').slice(0,8);Plotly.newPlot('chartGrupo',[{type:'bar',x:grupo.map(d=>d.label),y:grupo.map(d=>d.value),marker:{color:colors[3]}}],{...baseLayout(),xaxis:{tickangle:-25}},{displayModeBar:false,responsive:true});
     const demand=aggregate(data,'demandante').slice(0,12);Plotly.newPlot('chartDemandante',[{type:'bar',x:demand.map(d=>d.value).reverse(),y:demand.map(d=>d.label).reverse(),orientation:'h',marker:{color:cor}}],{...baseLayout(),margin:{l:120,r:10,t:10,b:40}},{displayModeBar:false,responsive:true});
     const desc=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).slice(0,12);Plotly.newPlot('chartDescricao',[{type:'bar',x:desc.map(d=>d.valor_total_num).reverse(),y:desc.map(d=>d.descricao.slice(0,34)).reverse(),orientation:'h',marker:{color:colors[2]}}],{...baseLayout(),margin:{l:180,r:10,t:10,b:40}},{displayModeBar:false,responsive:true});
-    const periodo=aggregate(data,'data_desejada').sort((a,b)=>quarterOrder(a.label)-quarterOrder(b.label));Plotly.newPlot('chartPeriodo',[{type:'bar',x:periodo.map(d=>d.label),y:periodo.map(d=>d.value),marker:{color:colors[5]}}],{...baseLayout()},{displayModeBar:false,responsive:true});
-    const periodoQtd=aggregate(data,'data_desejada','count').sort((a,b)=>quarterOrder(a.label)-quarterOrder(b.label));Plotly.newPlot('chartPeriodoQtd',[{type:'scatter',mode:'lines+markers',x:periodoQtd.map(d=>d.label),y:periodoQtd.map(d=>d.value),line:{color:colors[6],width:4},marker:{size:10}}],{...baseLayout()},{displayModeBar:false,responsive:true});
     const demandanteSelecionado = document.getElementById('demandante').value;if(demandanteSelecionado !== 'Todos'){const paeData = data.filter(r => r.demandante === demandanteSelecionado);const comPae = paeData.filter(r => (r.pae || '').trim() !== '').length;const semPae = paeData.length - comPae;Plotly.newPlot('chartPae',[{type:'pie',labels:['Com PAE', 'Sem PAE'],values:[comPae, semPae],textinfo:'label+value',marker:{colors:[colors[0], colors[1]]}}],{...baseLayout(),margin:{l:10,r:10,t:10,b:10}},{displayModeBar:false,responsive:true});document.getElementById('paeChartContainer').style.display = 'grid';}else{document.getElementById('paeChartContainer').style.display = 'none';}
 }
 
@@ -314,8 +315,7 @@ function renderTable(data){
 }
 
 function renderRanking(data){document.getElementById('rankingBody').innerHTML=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).slice(0,30).map((r,i)=>`<tr><td>${i+1}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td><td><span class="badge ${priorityClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td><td>${money(r.valor_total_num)}</td><td>${r.pae}</td></tr>`).join('');}
-function renderTimeline(data){const periodos=aggregate(data,'data_desejada').sort((a,b)=>quarterOrder(a.label)-quarterOrder(b.label));const max=Math.max(...periodos.map(d=>d.value),1);document.getElementById('timeline').innerHTML=periodos.map(d=>`<div class="timeline-row"><div><strong>${d.label}</strong></div><div class="bar"><span style="width:${(d.value/max)*100}%"></span></div><div>${money(d.value)}</div></div>`).join('');}
-function update(){const data=getFiltered();renderKPIs(data);renderCharts(data);renderTable(data);renderRanking(data);renderTimeline(data);}
+function update(){const data=getFiltered();renderKPIs(data);renderCharts(data);renderTable(data);renderRanking(data);}
 ['search',...selects].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',update));document.getElementById('resetBtn').addEventListener('click',()=>{document.getElementById('search').value='';selects.forEach(id=>document.getElementById(id).value='Todos');update();});document.getElementById('themeBtn').addEventListener('click',()=>{const root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='dark'?'light':'dark');update();});document.getElementById('refreshBtn').addEventListener('click',loadLiveData);document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');}));if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.setAttribute('data-theme','dark');
 
 // Lógica de fechar o Modal
