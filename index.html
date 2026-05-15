@@ -95,6 +95,9 @@ tr.clickable:hover { background: var(--color-surface-offset); }
       <article class="card pad"><div class="metric-label">Valor por item</div><div id="chartItem" class="chart"></div></article>
       <article class="card pad"><div class="metric-label">Valor por grupo</div><div id="chartGrupo" class="chart"></div></article>
     </div>
+    <div id="paeChartContainer" style="display:none;">
+      <article class="card pad"><div class="metric-label">Processos com PAE por Demandante</div><div id="chartPae" class="chart"></div></article>
+    </div>
     <article class="card pad"><div class="metric-label">Detalhamento filtrado (Clique na linha para ver andamento)</div><div class="table-wrap"><table><thead><tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr></thead><tbody id="tbody"></tbody></table></div></article>
   </section>
   <section id="ranking" class="section">
@@ -167,7 +170,10 @@ async function loadLiveData(){
         const idxPae = headAndamentos.findIndex(h => h.includes('PAE'));
         const idxRito = headAndamentos.findIndex(h => h.includes('RITO'));
         const idxSetor = headAndamentos.findIndex(h => h.includes('SETOR') || h.includes('LOCAL'));
-        const idxAndamento = headAndamentos.findIndex(h => h.includes('ANDAMENTO') || h.includes('STATUS'));
+        
+        // AQUI ESTÁ A MUDANÇA: O índice do Andamento agora aponta fixamente para a Coluna S (índice 18)
+        const idxAndamento = 18; 
+        
         const idxUltima = headAndamentos.findIndex(h => h.includes('TRAMITAÇÃO') || h.includes('TRAMITACAO') || h.includes('ÚLTIMA') || h.includes('ULTIMA'));
 
         andamentosData = {}; 
@@ -275,6 +281,8 @@ function renderCharts(data){
     const grupo=aggregate(data,'grupo').slice(0,8);Plotly.newPlot('chartGrupo',[{type:'bar',x:grupo.map(d=>d.label),y:grupo.map(d=>d.value),marker:{color:colors[3]}}],{...baseLayout(),xaxis:{tickangle:-25}},{displayModeBar:false,responsive:true});
     const demand=aggregate(data,'demandante').slice(0,12);Plotly.newPlot('chartDemandante',[{type:'bar',x:demand.map(d=>d.value).reverse(),y:demand.map(d=>d.label).reverse(),orientation:'h',marker:{color:cor}}],{...baseLayout(),margin:{l:120,r:10,t:10,b:40}},{displayModeBar:false,responsive:true});
     const desc=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).slice(0,12);Plotly.newPlot('chartDescricao',[{type:'bar',x:desc.map(d=>d.valor_total_num).reverse(),y:desc.map(d=>d.descricao.slice(0,34)).reverse(),orientation:'h',marker:{color:colors[2]}}],{...baseLayout(),margin:{l:180,r:10,t:10,b:40}},{displayModeBar:false,responsive:true});
+    
+    const demandanteSelecionado = document.getElementById('demandante').value;if(demandanteSelecionado !== 'Todos'){const paeData = data.filter(r => r.demandante === demandanteSelecionado);const comPae = paeData.filter(r => (r.pae || '').trim() !== '').length;const semPae = paeData.length - comPae;Plotly.newPlot('chartPae',[{type:'pie',labels:['Com PAE', 'Sem PAE'],values:[comPae, semPae],textinfo:'label+value',marker:{colors:[colors[0], colors[1]]}}],{...baseLayout(),margin:{l:10,r:10,t:10,b:10}},{displayModeBar:false,responsive:true});document.getElementById('paeChartContainer').style.display = 'grid';}else{document.getElementById('paeChartContainer').style.display = 'none';}
 }
 
 window.abrirModalProcesso = function(pae, fonte, descricao, demandante) {
