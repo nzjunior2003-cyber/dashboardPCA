@@ -56,7 +56,7 @@
       <article class="card pad"><div class="metric-label">Valor estimado</div><div class="metric-value" id="kpiValor"></div><div class="metric-sub">Soma do valor total estimado</div></article>
       <article class="card pad"><div class="metric-label">Prioridade alta</div><div class="metric-value" id="kpiAlta"></div><div class="metric-sub">Quantidade de demandas críticas</div></article>
       <article class="card pad"><div class="metric-label">Com PAE</div><div class="metric-value" id="kpiPae"></div><div class="metric-sub">Processos já identificados</div></article>
-      <article class="card pad"><div class="metric-label">Em instrução fora do PCA</div><div class="metric-value" id="kpiInstrucaoForaPca"></div><div class="metric-sub">Processos em instrução não previstos no PCA</div></article>
+      <article class="card pad" id="cardForaPca" style="cursor:pointer"><div class="metric-label">Processos fora do PCA</div><div class="metric-value" id="kpiInstrucaoForaPca"></div><div class="metric-sub">Quantidade de processos marcados como Não na coluna Y</div></article>
     </div>
     <div class="grid-two">
       <article class="card pad"><div class="metric-label">Valor por origem</div><div id="chartOrigem" class="chart"></div></article>
@@ -95,6 +95,7 @@ const integer = new Intl.NumberFormat('pt-BR');
 const selects = ['origem','demandante','qdqq','item','grupo','prioridade','fonte','contrato'];
 const fieldMap = {origem:'origem', demandante:'demandante', qdqq:'qdqq', item:'item', grupo:'grupo', prioridade:'prioridade', fonte:'fonte', contrato:'contrato_novo'};
 const chartFilters = {origem:null, prioridade:null, setor:null, grupo:null, fonte:null, demandante:null, data_desejada:null};
+let onlyForaPca = false;
 
 function csvToRows(text){const rows=[];let row=[],cur='',q=false;for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c==='"'){if(q&&n==='"'){cur+='"';i++;}else q=!q;}else if(c===','&&!q){row.push(cur);cur='';}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cur);if(row.some(x=>x!==''))rows.push(row);row=[];cur='';}else cur+=c;}if(cur.length||row.length){row.push(cur);rows.push(row);}return rows;}
 function cleanCol(c){return (c||'').replace(/\n/g,' ').replace(/\s+/g,' ').trim();}
@@ -185,6 +186,7 @@ function getFiltered(){
     if(chartFilters.fonte && r.fonte !== chartFilters.fonte) return false;
     if(chartFilters.demandante && r.demandante !== chartFilters.demandante) return false;
     if(chartFilters.data_desejada && r.qdqq !== chartFilters.data_desejada) return false;
+    if(onlyForaPca && normalizarTexto(r.pca_ref) !== 'nao' && normalizarTexto(r.pca_ref) !== 'não') return false;
     if(q){
       const hay=norm([r.descricao,r.origem,r.demandante,r.pae,r.grupo,r.item,r.qdqq,r.setor,r.fase,r.pca_ref].join(' '));
       if(!hay.includes(q))return false;
@@ -194,13 +196,19 @@ function getFiltered(){
 }
 
 function renderKPIs(data){
-  const emInstrucaoForaPca = data.filter(r => normalizarTexto(r.fase).includes('instrucao') && naoPrevistoNoPCA(r.pca_ref)).length;
+  const processosForaPca = new Set(
+    rawData
+      .filter(r => normalizarTexto(r.pca_ref) === 'nao' || normalizarTexto(r.pca_ref) === 'não')
+      .map(r => (r.processo || r.pae || r.descricao || '').trim())
+      .filter(Boolean)
+  ).size;
   document.getElementById('kpiRegistros').textContent = integer.format(data.length);
   document.getElementById('kpiValor').textContent = money(data.reduce((s,r)=>s+(r.valor_total_num||0),0));
   document.getElementById('kpiAlta').textContent = integer.format(data.filter(r=>norm(r.prioridade)==='alta').length);
   document.getElementById('kpiPae').textContent = integer.format(data.filter(r=>(r.pae||'').trim()!=='').length);
-  document.getElementById('kpiInstrucaoForaPca').textContent = integer.format(emInstrucaoForaPca);
+  document.getElementById('kpiInstrucaoForaPca').textContent = integer.format(processosForaPca);
   document.getElementById('countInfo').textContent = `${integer.format(data.length)} de ${integer.format(rawData.length)} registros exibidos`;
+  document.getElementById('cardForaPca').style.outline = onlyForaPca ? '2px solid var(--color-primary)' : 'none';
 }
 function baseLayout(){return {paper_bgcolor:'transparent',plot_bgcolor:'transparent',margin:{l:40,r:10,t:10,b:32},font:{family:'Inter, sans-serif',color:getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim()},xaxis:{gridcolor:getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim(),zeroline:false},yaxis:{gridcolor:getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim(),zeroline:false},showlegend:true,legend:{orientation:'h',y:-0.2}};}
 function renderCharts(data){
@@ -231,9 +239,9 @@ function renderRanking(data){document.getElementById('rankingBody').innerHTML=[.
 function renderTimeline(data){const periodos=aggregate(data,'data_desejada').sort((a,b)=>quarterOrder(a.label)-quarterOrder(b.label));const max=Math.max(...periodos.map(d=>d.value),1);document.getElementById('timeline').innerHTML=periodos.map(d=>`<div class="timeline-row"><div><strong>${d.label}</strong></div><div class="bar"><span style="width:${(d.value/max)*100}%"></span></div><div>${money(d.value)}</div></div>`).join('');}
 function update(){const data=getFiltered();renderKPIs(data);renderCharts(data);renderTable(data);renderRanking(data);renderTimeline(data);}
 ['search',...selects].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',update));
-document.getElementById('resetBtn').addEventListener('click',()=>{document.getElementById('search').value='';selects.forEach(id=>document.getElementById(id).value='Todos');Object.keys(chartFilters).forEach(k=>chartFilters[k]=null);update();});
+document.getElementById('resetBtn').addEventListener('click',()=>{document.getElementById('search').value='';selects.forEach(id=>document.getElementById(id).value='Todos');Object.keys(chartFilters).forEach(k=>chartFilters[k]=null);onlyForaPca=false;update();});
 document.getElementById('themeBtn').addEventListener('click',()=>{const root=document.documentElement;root.setAttribute('data-theme',root.getAttribute('data-theme')==='dark'?'light':'dark');update();});
-document.getElementById('refreshBtn').addEventListener('click',loadLiveData);document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');}));if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.setAttribute('data-theme','dark');loadLiveData();setInterval(loadLiveData,60000);
+document.getElementById('refreshBtn').addEventListener('click',loadLiveData);document.getElementById('cardForaPca').addEventListener('click',()=>{onlyForaPca=!onlyForaPca;document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));document.querySelector('[data-view="visao"]').classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('visao').classList.add('active');update();window.scrollTo({top:0,behavior:'smooth'});});document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(btn.dataset.view).classList.add('active');}));if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.setAttribute('data-theme','dark');loadLiveData();setInterval(loadLiveData,60000);
 </script>
 </body>
 </html>
