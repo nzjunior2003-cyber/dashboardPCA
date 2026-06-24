@@ -23,25 +23,37 @@ button,input,select{font:inherit}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.btn{padding:8px 12px;border-radius:10px;border:1px solid var(--color-border);background:var(--color-surface);color:var(--color-text);cursor:pointer}.btn.primary{background:var(--color-primary);border-color:var(--color-primary);color:#fff}
 .main{padding:24px;display:grid;gap:18px}.topbar{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}.title h2{margin:0;font-size:1.85rem}.title p{margin:6px 0 0;color:var(--color-text-muted)}
 .cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
-.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius)}.pad{padding:18px}.metric-label{color:var(--color-text-muted);font-size:.84rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}.metric-value{font-size:1.9rem;font-weight:800;margin-top:8px}.metric-sub{margin-top:6px;color:var(--color-text-muted);font-size:.92rem}
-/* Card clicável — estado padrão */
-.card.clickable-card{cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s}
-.card.clickable-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
-/* Card PROCESSOS DO PCA ativo (modo padrão ativo) */
-.card.clickable-card.active-pca{border-color:var(--color-primary);box-shadow:0 0 0 2px rgba(1,105,111,.25)}
-.card.clickable-card.active-pca .metric-label{color:var(--color-primary)}
-.card.clickable-card.active-pca .metric-value{color:var(--color-primary)}
-/* Card FORA DO PCA ativo */
-.card.clickable-card.active-filter{border-color:#a13544;box-shadow:0 0 0 2px rgba(161,53,68,.25)}
-.card.clickable-card.active-filter .metric-label{color:#a13544}
-.card.clickable-card.active-filter .metric-value{color:#a13544}
-.grid-two{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.grid-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.chart{height:360px}.table-wrap{overflow:auto;max-height:560px;border-radius:18px}table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.92rem}th{position:sticky;top:0;background:var(--color-surface-2);z-index:2}
-.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:700}.alta{background:rgba(161,53,68,.13);color:#a13544}.media{background:rgba(209,153,0,.16);color:#8a5b00}.baixa{background:rgba(67,122,34,.14);color:#2e5c10}.small{font-size:.84rem;color:var(--color-text-muted)}
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius)}.pad{padding:18px}
+.metric-label{color:var(--color-text-muted);font-size:.84rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.metric-value{font-size:1.9rem;font-weight:800;margin-top:8px}
+.metric-sub{margin-top:6px;color:var(--color-text-muted);font-size:.92rem}
+.card.sel{cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s}
+.card.sel:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.card.sel.sel-pca{border-color:var(--color-primary);box-shadow:0 0 0 2px rgba(1,105,111,.22)}
+.card.sel.sel-pca .metric-label,.card.sel.sel-pca .metric-value{color:var(--color-primary)}
+.card.sel.sel-fora{border-color:#a13544;box-shadow:0 0 0 2px rgba(161,53,68,.22)}
+.card.sel.sel-fora .metric-label,.card.sel.sel-fora .metric-value{color:#a13544}
+.grid-two{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+.chart{height:360px}.table-wrap{overflow:auto;max-height:560px;border-radius:18px}
+table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.92rem}
+th{position:sticky;top:0;background:var(--color-surface-2);z-index:2}
+.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:700}
+.alta{background:rgba(161,53,68,.13);color:#a13544}.media{background:rgba(209,153,0,.16);color:#8a5b00}.baixa{background:rgba(67,122,34,.14);color:#2e5c10}
+.small{font-size:.84rem;color:var(--color-text-muted)}
 .section{display:none}.section.active{display:grid;gap:18px}
 tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{background:var(--color-surface-offset)}
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:none;place-items:center;z-index:1000;padding:20px;opacity:0;transition:opacity .2s ease-in-out;backdrop-filter:blur(4px)}
-.modal-overlay.open{display:grid;opacity:1}.modal-card{background:var(--color-surface);width:100%;max-width:700px;border-radius:var(--radius);padding:28px;box-shadow:0 10px 40px rgba(0,0,0,.3);position:relative;max-height:90vh;overflow-y:auto}.modal-close{position:absolute;top:20px;right:20px;background:var(--color-surface-offset);border:1px solid var(--color-border);width:32px;height:32px;border-radius:50%;font-size:1.2rem;cursor:pointer;color:var(--color-text);display:grid;place-items:center}.modal-close:hover{background:var(--color-primary);color:#fff;border-color:var(--color-primary)}.modal-title{font-size:1.4rem;font-weight:800;margin:0 0 4px;padding-right:30px;line-height:1.2}.modal-subtitle{color:var(--color-text-muted);margin:0 0 24px;font-size:.95rem;display:flex;gap:8px;align-items:center}.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.modal-field{background:var(--color-bg);padding:14px 18px;border-radius:12px;border:1px solid var(--color-border)}.modal-label{font-size:.75rem;text-transform:uppercase;font-weight:700;color:var(--color-text-muted);margin-bottom:6px;letter-spacing:.04em}.modal-value{font-weight:600;font-size:1rem;color:var(--color-primary)}.modal-full{grid-column:1/-1}
-@media (max-width:1080px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--color-border)}.cards,.grid-two,.grid-three{grid-template-columns:1fr}.chart{height:320px}.modal-grid{grid-template-columns:1fr}}
+.modal-card{background:var(--color-surface);width:100%;max-width:700px;border-radius:var(--radius);padding:28px;box-shadow:0 10px 40px rgba(0,0,0,.3);position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:20px;right:20px;background:var(--color-surface-offset);border:1px solid var(--color-border);width:32px;height:32px;border-radius:50%;font-size:1.2rem;cursor:pointer;color:var(--color-text);display:grid;place-items:center}
+.modal-close:hover{background:var(--color-primary);color:#fff;border-color:var(--color-primary)}
+.modal-title{font-size:1.4rem;font-weight:800;margin:0 0 4px;padding-right:30px;line-height:1.2}
+.modal-subtitle{color:var(--color-text-muted);margin:0 0 24px;font-size:.95rem;display:flex;gap:8px;align-items:center}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.modal-field{background:var(--color-bg);padding:14px 18px;border-radius:12px;border:1px solid var(--color-border)}
+.modal-label{font-size:.75rem;text-transform:uppercase;font-weight:700;color:var(--color-text-muted);margin-bottom:6px;letter-spacing:.04em}
+.modal-value{font-weight:600;font-size:1rem;color:var(--color-primary)}
+.modal-full{grid-column:1/-1}
+@media (max-width:1080px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--color-border)}.cards,.grid-two{grid-template-columns:1fr}.chart{height:320px}.modal-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -64,28 +76,45 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
     <div class="field"><label>Grupo</label><select id="grupo" class="select"></select></div>
     <div class="field"><label>Prioridade</label><select id="prioridade" class="select"></select></div>
     <div class="field"><label>Fonte do recurso</label><select id="fonte" class="select"></select></div>
-    <div class="actions"><button class="btn primary" id="refreshBtn">Atualizar agora</button><button class="btn" id="resetBtn">Limpar</button><button class="btn" id="themeBtn">Tema</button></div>
+    <div class="actions">
+      <button class="btn primary" id="refreshBtn">Atualizar agora</button>
+      <button class="btn" id="resetBtn">Limpar</button>
+      <button class="btn" id="themeBtn">Tema</button>
+    </div>
     <div class="small" id="liveStatus">Recarga automática ativa.</div>
   </div>
 </aside>
 <main class="main">
-  <div class="topbar"><div class="title"><h2>Planejamento consolidado</h2><p>Dados lidos diretamente da Google Sheet, com atualização automática e navegação por páginas.</p></div><div class="small"><div id="countInfo"></div><div id="updatedInfo"></div></div></div>
+  <div class="topbar">
+    <div class="title"><h2>Planejamento consolidado</h2><p>Dados lidos diretamente da Google Sheet, com atualização automática.</p></div>
+    <div class="small"><div id="countInfo"></div><div id="updatedInfo"></div></div>
+  </div>
   <section id="visao" class="section active">
     <div class="cards">
-      <!-- Card 1: Processos do PCA — clique restaura visão padrão (GERAL PCA) -->
-      <article class="card pad clickable-card" id="kpiPcaCard" title="Clique para ver os Processos do PCA">
+      <article class="card pad sel" id="cardPca" title="Clique para ver os Processos do PCA">
         <div class="metric-label">Processos do PCA</div>
-        <div class="metric-value" id="kpiRegistros"></div>
-        <div class="metric-sub" id="kpiPcaSub">Itens filtrados na visualização</div>
+        <div class="metric-value" id="kpiRegistros">—</div>
+        <div class="metric-sub" id="kpiPcaSub">Aba GERAL PCA</div>
       </article>
-      <article class="card pad"><div class="metric-label">Valor do recurso</div><div class="metric-value" id="kpiValor"></div><div class="metric-sub">Soma do valor do recurso</div></article>
-      <article class="card pad"><div class="metric-label">Prioridade alta</div><div class="metric-value" id="kpiAlta"></div><div class="metric-sub">Quantidade de demandas críticas</div></article>
-      <article class="card pad"><div class="metric-label">Com PAE</div><div class="metric-value" id="kpiPae"></div><div class="metric-sub">Processos já identificados</div></article>
-      <!-- Card 5: Processos fora do PCA — clique exibe dados da aba "Processos 2026" -->
-      <article class="card pad clickable-card" id="kpiForaPcaCard" title="Clique para ver os Processos fora do PCA (Processos 2026)">
+      <article class="card pad">
+        <div class="metric-label">Valor do recurso</div>
+        <div class="metric-value" id="kpiValor">—</div>
+        <div class="metric-sub">Soma do valor do recurso</div>
+      </article>
+      <article class="card pad">
+        <div class="metric-label">Prioridade alta</div>
+        <div class="metric-value" id="kpiAlta">—</div>
+        <div class="metric-sub">Quantidade de demandas críticas</div>
+      </article>
+      <article class="card pad">
+        <div class="metric-label">Com PAE</div>
+        <div class="metric-value" id="kpiPae">—</div>
+        <div class="metric-sub">Processos já identificados</div>
+      </article>
+      <article class="card pad sel" id="cardFora" title="Clique para ver os Processos fora do PCA">
         <div class="metric-label">Processos fora do PCA</div>
         <div class="metric-value" id="kpiForaPca">—</div>
-        <div class="metric-sub" id="kpiForaPcaSub">Clique para filtrar os marcados como NÃO</div>
+        <div class="metric-sub" id="kpiForaSub">Aba Processos 2026 (col Y = NÃO)</div>
       </article>
     </div>
     <div class="grid-two">
@@ -97,10 +126,10 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
       <article class="card pad"><div class="metric-label">Valor por Grupo</div><div id="chartGrupo" class="chart"></div></article>
     </div>
     <article class="card pad">
-      <div class="metric-label" id="tableLabel">Detalhamento</div>
+      <div class="metric-label" id="tableLabel">Detalhamento — GERAL PCA</div>
       <div class="table-wrap">
         <table id="mainTable">
-          <thead id="mainThead"><tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr></thead>
+          <thead id="mainThead"></thead>
           <tbody id="tbody"></tbody>
         </table>
       </div>
@@ -123,6 +152,7 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
   </section>
 </main>
 </div>
+
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-card">
     <button class="modal-close" id="modalClose" aria-label="Fechar">×</button>
@@ -131,299 +161,363 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
     <div class="modal-grid" id="modalGrid"></div>
   </div>
 </div>
+
 <script>
-const SHEET_ID='1deakLqP8-enEgY384EkFyYedgo5WYSONjvYIBJDwqXE';
-const SHEET_NAME_GERAL='geral';
-const SHEET_NAME_2='Processos 2026';
-const CSV_GERAL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME_GERAL)}`;
-const CSV_2=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME_2)}`;
-const REFRESH_INTERVAL=60000;
-let allData=[];
-let andamentosData={};
-let foraPcaData={};
-let foraPcaRows=[];
-// Modo: 'geral' = Processos do PCA (GERAL PCA) | 'fora' = Processos fora do PCA (Processos 2026)
-let modoAtivo='geral';
-let lastFilter={};
-let autoTimer=null;
+// ============================================================
+// FONTES DE DADOS
+// ============================================================
+// Planilha 1: GERAL PCA  (aba "GERAL PCA")
+const SHEET_ID_PCA   = '1-XrRG5oLqrcMPLNHePm3KS4671vCp1r0';
+const ABA_PCA        = 'GERAL PCA';
+// Planilha 2: Processos 2026 (aba "Processos 2026", coluna Y = NAO)
+const SHEET_ID_FORA  = '1deakLqP8-enEgY384EkFyYedgo5WYSONjvYIBJDwqXE';
+const ABA_FORA       = 'Processos 2026';
 
-const THEAD_PADRAO='<tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr>';
-const THEAD_FORA_PCA='<tr><th>Ordem</th><th>Demandante</th><th>Objeto</th><th>Item</th><th>V. Estimado</th><th>Nº PAE</th></tr>';
+const gviz = (id, aba) =>
+  `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(aba)}`;
 
-function norm(s){return(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
-function moneyToFloat(s){if(!s)return 0;return parseFloat(s.replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.'))||0;}
-function money(v){if(!v&&v!==0)return'—';return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function priorityClass(p){const n=norm(p);if(n==='alta')return'alta';if(n==='media'||n==='média')return'media';if(n==='baixa')return'baixa';return'';}
+const REFRESH_INTERVAL = 60000;
 
-function parseCSV(text){
-  const rows=[];let row=[];let field='';let inQ=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(inQ){if(c==='"'&&text[i+1]==='"'){field+='"';i++;}else if(c==='"'){inQ=false;}else{field+=c;}}
-    else if(c==='"'){inQ=true;}
-    else if(c===','){row.push(field);field='';}
-    else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);field='';if(row.some(f=>f!==''))rows.push(row);row=[];}
-    else{field+=c;}
+// dados carregados
+let geralData   = [];   // linhas de GERAL PCA
+let foraData    = [];   // linhas de Processos 2026 com col Y = NAO
+let andamentos  = {};   // mapa PAE -> {rito, setor, andamento, ultima}
+
+// modo ativo: 'pca' | 'fora'
+let modo = 'pca';
+let autoTimer = null;
+
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
+const norm  = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+const m2f   = s => { if(!s) return 0; return parseFloat(s.replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.'))||0; };
+const money = v => { if(!v && v!==0) return '—'; return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+const pClass= p => { const n=norm(p); return n==='alta'?'alta':n==='media'||n==='média'?'media':n==='baixa'?'baixa':''; };
+const esc   = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+
+function parseCSV(txt){
+  const rows=[];let row=[];let f='';let q=false;
+  for(let i=0;i<txt.length;i++){
+    const c=txt[i];
+    if(q){if(c==='"'&&txt[i+1]==='"'){f+='"';i++;}else if(c==='"'){q=false;}else{f+=c;}}
+    else if(c==='"'){q=true;}
+    else if(c===','){row.push(f);f='';}
+    else if(c==='\n'||c==='\r'){
+      if(c==='\r'&&txt[i+1]==='\n')i++;
+      row.push(f);f='';
+      if(row.some(x=>x!==''))rows.push(row);
+      row=[];
+    }else{f+=c;}
   }
-  if(field||row.length)row.push(field);
-  if(row.some(f=>f!==''))rows.push(row);
+  if(f||row.length){row.push(f);if(row.some(x=>x!==''))rows.push(row);}
   return rows;
 }
 
+// ============================================================
+// CARGA DE DADOS
+// ============================================================
 async function loadData(){
   document.getElementById('liveStatus').textContent='Carregando dados...';
   try{
-    const [r1,r2]=await Promise.all([fetch(CSV_GERAL),fetch(CSV_2)]);
-    const [t1,t2]=await Promise.all([r1.text(),r2.text()]);
-    const rowsAndamentos=parseCSV(t2);
-    const headAndamentos=rowsAndamentos[0]||[];
-    const idxPae=headAndamentos.findIndex(h=>norm(h).includes('pae'));
-    const idxRito=headAndamentos.findIndex(h=>norm(h).includes('rito'));
-    const idxSetor=headAndamentos.findIndex(h=>norm(h).includes('setor atual')||norm(h).includes('setor_atual'));
-    const idxAndamento=headAndamentos.findIndex(h=>norm(h).includes('andamento')&&!norm(h).includes('ultima')&&!norm(h).includes('última')&&!norm(h).includes('last'));
-    const idxUltima=headAndamentos.findIndex(h=>h.includes('TRAMITAÇÃO')||h.includes('TRAMITACAO')||h.includes('ÚLTIMA')||h.includes('ULTIMA'));
-    const idxForaPca=24;
-    andamentosData={};foraPcaData={};foraPcaRows=[];
-    for(let i=1;i<rowsAndamentos.length;i++){
-      const row=rowsAndamentos[i];
-      if(!row||row.length===0)continue;
-      const paeLimpo=idxPae>=0?(row[idxPae]||'').trim():'';
-      const previsao=(row[idxForaPca]||'').trim();
-      if(paeLimpo){
-        andamentosData[paeLimpo]={
-          rito:idxRito>=0?(row[idxRito]||'').trim()||'Não preenchido':'Coluna Rito não encontrada',
-          setor:idxSetor>=0?(row[idxSetor]||'').trim()||'Não preenchido':'Coluna Setor não encontrada',
-          andamento:idxAndamento>=0?(row[idxAndamento]||'').trim()||'Sem andamentos':'Coluna Andamento não encontrada',
-          ultima:idxUltima>=0?(row[idxUltima]||'').trim()||'Sem registo':'Coluna Tramitação não encontrada'
+    const [rPca, rFora] = await Promise.all([
+      fetch(gviz(SHEET_ID_PCA,  ABA_PCA)),
+      fetch(gviz(SHEET_ID_FORA, ABA_FORA))
+    ]);
+    const [tPca, tFora] = await Promise.all([rPca.text(), rFora.text()]);
+
+    // --- Processar Processos 2026 (foraData + andamentos) ---
+    const rowsFora = parseCSV(tFora);
+    const hFora    = rowsFora[0] || [];
+    // detectar colunas por nome
+    const iPaeF  = hFora.findIndex(h => norm(h).includes('pae'));
+    const iRito  = hFora.findIndex(h => norm(h).includes('rito'));
+    const iSetor = hFora.findIndex(h => norm(h).includes('setor atual') || norm(h).includes('setor_atual'));
+    const iAnd   = hFora.findIndex(h => norm(h).includes('andamento') && !norm(h).includes('ultima') && !norm(h).includes('última') && !norm(h).includes('last'));
+    const iUlt   = hFora.findIndex(h => h.includes('TRAMITAÇÃO')||h.includes('TRAMITACAO')||h.includes('ÚLTIMA')||h.includes('ULTIMA'));
+    // coluna Y = índice 24 (0-based)
+    const iColY  = 24;
+
+    andamentos = {};
+    foraData   = [];
+    for(let i=1;i<rowsFora.length;i++){
+      const r = rowsFora[i];
+      if(!r || r.length===0) continue;
+      const pae = iPaeF>=0 ? (r[iPaeF]||'').trim() : '';
+      const colY = (r[iColY]||'').trim();
+      // guardar andamentos de todos os processos
+      if(pae){
+        andamentos[pae] = {
+          rito     : iRito>=0  ? (r[iRito]||'').trim()||'Não preenchido' : '—',
+          setor    : iSetor>=0 ? (r[iSetor]||'').trim()||'Não preenchido' : '—',
+          andamento: iAnd>=0   ? (r[iAnd]||'').trim()||'Sem andamentos' : '—',
+          ultima   : iUlt>=0   ? (r[iUlt]||'').trim()||'Sem registro'  : '—'
         };
-        foraPcaData[paeLimpo]=previsao;
       }
-      if(norm(previsao)==='nao'){
-        foraPcaRows.push({
-          ordem:(row[0]||'').trim(),
-          demandante:(row[7]||'').trim(),
-          descricao:(row[2]||'').trim(),
-          item:(row[8]||'').trim(),
-          valor_total_num:moneyToFloat((row[11]||'').trim()),
-          valor_exibicao:(row[11]||'').trim(),
-          pae:(row[1]||'').trim(),
-          grupo:'Fora do PCA',
-          prioridade:'',
-          data_desejada:'',
-          fonte:(row[9]||'').trim()
+      // linha fora do PCA: col Y normalizada = 'nao'
+      if(norm(colY) === 'nao'){
+        foraData.push({
+          ordem     : (r[0]||'').trim(),
+          pae       : pae,
+          descricao : (r[2]||'').trim(),
+          demandante: (r[7]||'').trim(),
+          item      : (r[8]||'').trim(),
+          fonte     : (r[9]||'').trim(),
+          valor_num : m2f((r[11]||'').trim()),
+          valor_str : (r[11]||'').trim()
         });
       }
     }
-    const rowsGeral=parseCSV(t1);
-    const head=rowsGeral[0]||[];
-    const iOrdem=head.findIndex(h=>norm(h).includes('ordem'));
-    const iDemandante=head.findIndex(h=>norm(h).includes('demandante')||norm(h).includes('setor'));
-    const iDescricao=head.findIndex(h=>norm(h).includes('descri')||norm(h).includes('objeto'));
-    const iItem=head.findIndex(h=>norm(h).includes('item')||norm(h).includes('natureza'));
-    const iGrupo=head.findIndex(h=>norm(h).includes('grupo'));
-    const iPrioridade=head.findIndex(h=>norm(h).includes('prioridade'));
-    const iData=head.findIndex(h=>norm(h).includes('data'));
-    const iValor=head.findIndex(h=>norm(h).includes('valor'));
-    const iFonte=head.findIndex(h=>norm(h).includes('fonte'));
-    const iPae=head.findIndex(h=>norm(h).includes('pae')||norm(h).includes('nº pae')||norm(h).includes('no pae'));
-    allData=[];
+
+    // --- Processar GERAL PCA ---
+    const rowsGeral = parseCSV(tPca);
+    const hGeral    = rowsGeral[0] || [];
+    const iOrdem = hGeral.findIndex(h => norm(h).includes('ordem'));
+    const iDem   = hGeral.findIndex(h => norm(h).includes('demandante') || norm(h).includes('setor'));
+    const iDesc  = hGeral.findIndex(h => norm(h).includes('descri') || norm(h).includes('objeto'));
+    const iItem  = hGeral.findIndex(h => norm(h).includes('item') || norm(h).includes('natureza'));
+    const iGrupo = hGeral.findIndex(h => norm(h).includes('grupo'));
+    const iPrio  = hGeral.findIndex(h => norm(h).includes('prioridade'));
+    const iData  = hGeral.findIndex(h => norm(h).includes('data'));
+    const iVal   = hGeral.findIndex(h => norm(h).includes('valor'));
+    const iFonte = hGeral.findIndex(h => norm(h).includes('fonte'));
+    const iPaeG  = hGeral.findIndex(h => norm(h).includes('pae'));
+
+    geralData = [];
     for(let i=1;i<rowsGeral.length;i++){
-      const row=rowsGeral[i];
-      if(!row||row.length===0)continue;
-      const pae=(iPae>=0?(row[iPae]||'').trim():'');
-      allData.push({
-        ordem:iOrdem>=0?(row[iOrdem]||'').trim():'',
-        demandante:iDemandante>=0?(row[iDemandante]||'').trim():'',
-        descricao:iDescricao>=0?(row[iDescricao]||'').trim():'',
-        item:iItem>=0?(row[iItem]||'').trim():'',
-        grupo:iGrupo>=0?(row[iGrupo]||'').trim():'',
-        prioridade:iPrioridade>=0?(row[iPrioridade]||'').trim():'',
-        data_desejada:iData>=0?(row[iData]||'').trim():'',
-        valor_total_num:iValor>=0?moneyToFloat((row[iValor]||'').trim()):0,
-        fonte:iFonte>=0?(row[iFonte]||'').trim():'',
-        pae:pae,
-        fora_pca:foraPcaData[pae]||''
+      const r = rowsGeral[i];
+      if(!r || r.length===0) continue;
+      geralData.push({
+        ordem     : iOrdem>=0 ? (r[iOrdem]||'').trim() : '',
+        demandante: iDem>=0   ? (r[iDem]||'').trim()   : '',
+        descricao : iDesc>=0  ? (r[iDesc]||'').trim()  : '',
+        item      : iItem>=0  ? (r[iItem]||'').trim()  : '',
+        grupo     : iGrupo>=0 ? (r[iGrupo]||'').trim() : '',
+        prioridade: iPrio>=0  ? (r[iPrio]||'').trim()  : '',
+        data_desejada: iData>=0 ? (r[iData]||'').trim(): '',
+        valor_num : iVal>=0   ? m2f((r[iVal]||'').trim()) : 0,
+        fonte     : iFonte>=0 ? (r[iFonte]||'').trim() : '',
+        pae       : iPaeG>=0  ? (r[iPaeG]||'').trim()  : ''
       });
     }
+
     populateFilters();
-    applyFilters();
-    document.getElementById('updatedInfo').textContent='Última atualização: '+new Date().toLocaleString('pt-BR');
-    document.getElementById('liveStatus').textContent='Recarga automática ativa.';
+    renderAll();
+    document.getElementById('updatedInfo').textContent = 'Última atualização: '+new Date().toLocaleString('pt-BR');
+    document.getElementById('liveStatus').textContent  = 'Recarga automática ativa.';
   }catch(e){
-    document.getElementById('liveStatus').textContent='Erro ao carregar: '+e.message;
+    document.getElementById('liveStatus').textContent = 'Erro ao carregar: '+e.message;
+    console.error(e);
   }
 }
 
+// ============================================================
+// FILTROS
+// ============================================================
 function populateFilters(){
-  function fill(id,key){
-    const sel=document.getElementById(id);
-    const cur=sel.value;
-    const vals=[...new Set(allData.map(r=>r[key]).filter(Boolean))].sort();
-    sel.innerHTML='<option value="">Todos</option>'+vals.map(v=>`<option value="${v}">${v}</option>`).join('');
-    if(vals.includes(cur))sel.value=cur;
-  }
+  const fill = (id, key) => {
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    const vals = [...new Set(geralData.map(r=>r[key]).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">Todos</option>' + vals.map(v=>`<option value="${v}">${v}</option>`).join('');
+    if(vals.includes(cur)) sel.value = cur;
+  };
   fill('demandante','demandante');
   fill('qdqq','grupo');
   fill('item','item');
   fill('grupo','grupo');
   fill('prioridade','prioridade');
   fill('fonte','fonte');
-  const ps=document.getElementById('pae_status');
-  const curPs=ps.value;
-  ps.innerHTML='<option value="">Todos</option><option value="com_pae">Com PAE</option><option value="sem_pae">Sem PAE</option>';
-  if(curPs)ps.value=curPs;
+  const ps  = document.getElementById('pae_status');
+  const cur = ps.value;
+  ps.innerHTML = '<option value="">Todos</option><option value="com_pae">Com PAE</option><option value="sem_pae">Sem PAE</option>';
+  if(cur) ps.value = cur;
 }
 
-function applyFilters(){
-  const search=norm(document.getElementById('search').value);
-  const demandante=document.getElementById('demandante').value;
-  const qdqq=document.getElementById('qdqq').value;
-  const item=document.getElementById('item').value;
-  const grupo=document.getElementById('grupo').value;
-  const prioridade=document.getElementById('prioridade').value;
-  const fonte=document.getElementById('fonte').value;
-  const paeStatus=document.getElementById('pae_status').value;
-  let filtered=allData.filter(r=>{
-    if(search&&!norm(r.descricao).includes(search)&&!norm(r.demandante).includes(search)&&!norm(r.pae).includes(search))return false;
-    if(demandante&&r.demandante!==demandante)return false;
-    if(qdqq&&r.grupo!==qdqq)return false;
-    if(item&&r.item!==item)return false;
-    if(grupo&&r.grupo!==grupo)return false;
-    if(prioridade&&r.prioridade!==prioridade)return false;
-    if(fonte&&r.fonte!==fonte)return false;
-    if(paeStatus==='com_pae'&&!r.pae)return false;
-    if(paeStatus==='sem_pae'&&r.pae)return false;
+function filteredGeral(){
+  const search    = norm(document.getElementById('search').value);
+  const demandante= document.getElementById('demandante').value;
+  const qdqq      = document.getElementById('qdqq').value;
+  const item      = document.getElementById('item').value;
+  const grupo     = document.getElementById('grupo').value;
+  const prioridade= document.getElementById('prioridade').value;
+  const fonte     = document.getElementById('fonte').value;
+  const paeStatus = document.getElementById('pae_status').value;
+  return geralData.filter(r=>{
+    if(search && !norm(r.descricao).includes(search) && !norm(r.demandante).includes(search) && !norm(r.pae).includes(search)) return false;
+    if(demandante && r.demandante !== demandante) return false;
+    if(qdqq      && r.grupo      !== qdqq)       return false;
+    if(item      && r.item       !== item)        return false;
+    if(grupo     && r.grupo      !== grupo)       return false;
+    if(prioridade&& r.prioridade !== prioridade)  return false;
+    if(fonte     && r.fonte      !== fonte)       return false;
+    if(paeStatus==='com_pae' && !r.pae) return false;
+    if(paeStatus==='sem_pae' &&  r.pae) return false;
     return true;
   });
-  updateKPIs(filtered);
-  renderCharts(filtered);
-  renderTable(filtered);
+}
+
+// ============================================================
+// RENDER PRINCIPAL
+// ============================================================
+function renderAll(){
+  if(modo==='pca'){
+    renderPca();
+  } else {
+    renderFora();
+  }
   updateCardStates();
-  const label=modoAtivo==='fora'
-    ?foraPcaRows.length+' de '+foraPcaRows.length+' registros exibidos (Processos 2026)'
-    :filtered.length+' de '+allData.length+' registros exibidos';
-  document.getElementById('countInfo').textContent=label;
 }
 
-function updateKPIs(data){
-  document.getElementById('kpiRegistros').textContent=data.length;
-  document.getElementById('kpiValor').textContent=money(data.reduce((s,r)=>s+(r.valor_total_num||0),0));
-  document.getElementById('kpiAlta').textContent=data.filter(r=>norm(r.prioridade)==='alta').length;
-  document.getElementById('kpiPae').textContent=data.filter(r=>r.pae).length;
-  document.getElementById('kpiForaPca').textContent=foraPcaRows.length;
+function renderPca(){
+  const data = filteredGeral();
+  // KPIs
+  document.getElementById('kpiRegistros').textContent = data.length;
+  document.getElementById('kpiValor').textContent     = money(data.reduce((s,r)=>s+(r.valor_num||0),0));
+  document.getElementById('kpiAlta').textContent      = data.filter(r=>norm(r.prioridade)==='alta').length;
+  document.getElementById('kpiPae').textContent       = data.filter(r=>r.pae).length;
+  document.getElementById('countInfo').textContent    = data.length+' de '+geralData.length+' registros exibidos';
+  // Charts
+  renderChartsPca(data);
+  // Tabela
+  document.getElementById('tableLabel').textContent = 'Detalhamento — GERAL PCA';
+  document.getElementById('mainThead').innerHTML =
+    '<tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr>';
+  document.getElementById('tbody').innerHTML =
+    [...data].sort((a,b)=>(b.valor_num||0)-(a.valor_num||0)).map(r=>{
+      return `<tr class="clickable" onclick="abrirModal('${esc(r.pae)}','${esc(r.fonte)}','${esc(r.descricao)}','${esc(r.demandante)}')">` +
+        `<td>${r.ordem}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td>` +
+        `<td>${r.item}</td><td>${r.grupo}</td>` +
+        `<td><span class="badge ${pClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td>` +
+        `<td>${r.data_desejada}</td><td>${money(r.valor_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`;
+    }).join('');
+  // Ranking tab
+  renderRanking(data);
 }
 
-function updateCardStates(){
-  const cardPca=document.getElementById('kpiPcaCard');
-  const cardFora=document.getElementById('kpiForaPcaCard');
-  const subPca=document.getElementById('kpiPcaSub');
-  const subFora=document.getElementById('kpiForaPcaSub');
-
-  // Card Processos do PCA: ativo (destaque verde) quando modoAtivo='geral'
-  cardPca.classList.toggle('active-pca', modoAtivo==='geral');
-  subPca.textContent=modoAtivo==='geral'
-    ?'Visão ativa — GERAL PCA'
-    :'Clique para voltar à visão do PCA';
-
-  // Card Processos fora do PCA: ativo (destaque vermelho) quando modoAtivo='fora'
-  cardFora.classList.toggle('active-filter', modoAtivo==='fora');
-  subFora.textContent=modoAtivo==='fora'
-    ?'Filtro ativo — exibindo Processos 2026 (NÃO no PCA)'
-    :'Clique para ver os marcados como NÃO';
+function renderFora(){
+  const data = foraData;
+  // KPIs (apenas o card fora fica com o número; os demais mantêm o último valor do PCA para contexto)
+  document.getElementById('kpiForaPca').textContent   = data.length;
+  document.getElementById('countInfo').textContent    = data.length+' processos fora do PCA (Processos 2026)';
+  // Tabela
+  document.getElementById('tableLabel').textContent = 'Processos fora do PCA — Processos 2026 (col Y = NÃO)';
+  document.getElementById('mainThead').innerHTML =
+    '<tr><th>Ordem</th><th>PAE</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Fonte</th><th>V. Estimado</th></tr>';
+  document.getElementById('tbody').innerHTML =
+    [...data].sort((a,b)=>(b.valor_num||0)-(a.valor_num||0)).map(r=>{
+      return `<tr><td>${r.ordem}</td><td><strong>${r.pae||'-'}</strong></td><td>${r.demandante}</td>` +
+        `<td><strong>${r.descricao}</strong></td><td>${r.item}</td><td>${r.fonte}</td><td>${r.valor_str||money(r.valor_num)}</td></tr>`;
+    }).join('');
+  // Charts ficam em branco (sem dado equivalente)
+  ['chartFonte','chartStatusPae','chartItem','chartGrupo'].forEach(id=>{
+    Plotly.purge(id);
+    document.getElementById(id).innerHTML = '<div style="display:grid;place-items:center;height:100%;color:var(--color-text-muted);font-size:.9rem;">Gráficos disponíveis apenas na visão GERAL PCA</div>';
+  });
 }
 
-function renderCharts(data){
-  const layout={margin:{t:10,r:10,b:40,l:150},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'var(--color-text)',family:'Inter,sans-serif',size:11},showlegend:false};
-  const config={responsive:true,displayModeBar:false};
-  const barColor='#01696f';
+function renderChartsPca(data){
+  const layout = {margin:{t:10,r:10,b:40,l:150},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'var(--color-text)',family:'Inter,sans-serif',size:11},showlegend:false};
+  const cfg    = {responsive:true,displayModeBar:false};
 
-  const fonteMap={};data.forEach(r=>{if(r.fonte)fonteMap[r.fonte]=(fonteMap[r.fonte]||0)+(r.valor_total_num||0);});
-  const fonteSorted=Object.entries(fonteMap).sort((a,b)=>a[1]-b[1]);
-  Plotly.react('chartFonte',[{type:'bar',orientation:'h',x:fonteSorted.map(e=>e[1]),y:fonteSorted.map(e=>e[0]),marker:{color:barColor}}],{...layout,margin:{...layout.margin,l:150}},config);
+  const fonteMap={};
+  data.forEach(r=>{if(r.fonte)fonteMap[r.fonte]=(fonteMap[r.fonte]||0)+(r.valor_num||0);});
+  const fs=Object.entries(fonteMap).sort((a,b)=>a[1]-b[1]);
+  Plotly.react('chartFonte',[{type:'bar',orientation:'h',x:fs.map(e=>e[1]),y:fs.map(e=>e[0]),marker:{color:'#01696f'}}],{...layout},cfg);
 
   const comPae=data.filter(r=>r.pae).length;
-  const semPae=data.filter(r=>!r.pae).length;
-  Plotly.react('chartStatusPae',[{type:'pie',values:[comPae,semPae],labels:['Identificados','Sem identificação'],marker:{colors:[barColor,'#d19900']},hole:.45,textinfo:'percent+label'}],{...layout,showlegend:true,legend:{orientation:'h',y:-0.2}},config);
+  Plotly.react('chartStatusPae',[{type:'pie',values:[comPae,data.length-comPae],labels:['Identificados','Sem identificação'],marker:{colors:['#01696f','#d19900']},hole:.45,textinfo:'percent+label'}],{...layout,showlegend:true,legend:{orientation:'h',y:-0.2}},cfg);
 
-  const itemMap={};data.forEach(r=>{if(r.item)itemMap[r.item]=(itemMap[r.item]||0)+(r.valor_total_num||0);});
-  const itemSorted=Object.entries(itemMap).sort((a,b)=>b[1]-a[1]);
-  Plotly.react('chartItem',[{type:'bar',x:itemSorted.map(e=>e[0]),y:itemSorted.map(e=>e[1]),marker:{color:'#d19900'}}],{...layout,margin:{t:10,r:10,b:80,l:60},xaxis:{tickangle:-30}},config);
+  const itemMap={};
+  data.forEach(r=>{if(r.item)itemMap[r.item]=(itemMap[r.item]||0)+(r.valor_num||0);});
+  const is=Object.entries(itemMap).sort((a,b)=>b[1]-a[1]);
+  Plotly.react('chartItem',[{type:'bar',x:is.map(e=>e[0]),y:is.map(e=>e[1]),marker:{color:'#d19900'}}],{...layout,margin:{t:10,r:10,b:80,l:60},xaxis:{tickangle:-30}},cfg);
 
-  const grupoMap={};data.forEach(r=>{if(r.grupo)grupoMap[r.grupo]=(grupoMap[r.grupo]||0)+(r.valor_total_num||0);});
-  const grupoSorted=Object.entries(grupoMap).sort((a,b)=>b[1]-a[1]);
-  Plotly.react('chartGrupo',[{type:'bar',x:grupoSorted.map(e=>e[0]),y:grupoSorted.map(e=>e[1]),marker:{color:'#437a22'}}],{...layout,margin:{t:10,r:10,b:80,l:60},xaxis:{tickangle:-30}},config);
-
-  const demMap={};data.forEach(r=>{if(r.demandante)demMap[r.demandante]=(demMap[r.demandante]||0)+(r.valor_total_num||0);});
-  const demSorted=Object.entries(demMap).sort((a,b)=>a[1]-b[1]).slice(-15);
-  Plotly.react('chartRankDemandante',[{type:'bar',orientation:'h',x:demSorted.map(e=>e[1]),y:demSorted.map(e=>e[0]),marker:{color:barColor}}],{...layout,margin:{t:10,r:10,b:40,l:180}},config);
-
-  const descMap={};data.forEach(r=>{if(r.descricao)descMap[r.descricao]=(descMap[r.descricao]||0)+(r.valor_total_num||0);});
-  const descSorted=Object.entries(descMap).sort((a,b)=>a[1]-b[1]).slice(-15);
-  Plotly.react('chartRankDescricao',[{type:'bar',orientation:'h',x:descSorted.map(e=>e[1]),y:descSorted.map(e=>e[0]),marker:{color:'#d19900'}}],{...layout,margin:{t:10,r:10,b:40,l:280}},config);
-
-  document.getElementById('tbodyRanking').innerHTML=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).slice(0,20).map(r=>{
-    const safePae=(r.pae||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    const safeFonte=(r.fonte||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    const safeDesc=(r.descricao||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    const safeDem=(r.demandante||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    return `<tr class="clickable" onclick="abrirModalProcesso('${safePae}','${safeFonte}','${safeDesc}','${safeDem}')"><td>${r.ordem??''}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td><td>${r.item}</td><td>${r.grupo}</td><td><span class="badge ${priorityClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td><td>${r.data_desejada}</td><td>${money(r.valor_total_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`;
-  }).join('');
+  const grupoMap={};
+  data.forEach(r=>{if(r.grupo)grupoMap[r.grupo]=(grupoMap[r.grupo]||0)+(r.valor_num||0);});
+  const gs=Object.entries(grupoMap).sort((a,b)=>b[1]-a[1]);
+  Plotly.react('chartGrupo',[{type:'bar',x:gs.map(e=>e[0]),y:gs.map(e=>e[1]),marker:{color:'#437a22'}}],{...layout,margin:{t:10,r:10,b:80,l:60},xaxis:{tickangle:-30}},cfg);
 }
 
-function renderTable(filteredData){
-  const thead=document.getElementById('mainThead');
+function renderRanking(data){
+  const layout = {margin:{t:10,r:10,b:40,l:150},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'var(--color-text)',family:'Inter,sans-serif',size:11},showlegend:false};
+  const cfg    = {responsive:true,displayModeBar:false};
 
-  if(modoAtivo==='geral'){
-    // Modo padrão: dados da aba GERAL PCA
-    thead.innerHTML=THEAD_PADRAO;
-    document.getElementById('tableLabel').textContent='Detalhamento — GERAL PCA';
-    const tabela=[...filteredData].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0));
-    document.getElementById('tbody').innerHTML=tabela.map(r=>{
-      const safePae=(r.pae||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-      const safeFonte=(r.fonte||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-      const safeDesc=(r.descricao||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-      const safeDem=(r.demandante||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-      return `<tr class="clickable" onclick="abrirModalProcesso('${safePae}','${safeFonte}','${safeDesc}','${safeDem}')"><td>${r.ordem??''}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td><td>${r.item}</td><td>${r.grupo}</td><td><span class="badge ${priorityClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td><td>${r.data_desejada}</td><td>${money(r.valor_total_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`;
+  const demMap={};
+  data.forEach(r=>{if(r.demandante)demMap[r.demandante]=(demMap[r.demandante]||0)+(r.valor_num||0);});
+  const ds=Object.entries(demMap).sort((a,b)=>a[1]-b[1]).slice(-15);
+  Plotly.react('chartRankDemandante',[{type:'bar',orientation:'h',x:ds.map(e=>e[1]),y:ds.map(e=>e[0]),marker:{color:'#01696f'}}],{...layout,margin:{t:10,r:10,b:40,l:180}},cfg);
+
+  const descMap={};
+  data.forEach(r=>{if(r.descricao)descMap[r.descricao]=(descMap[r.descricao]||0)+(r.valor_num||0);});
+  const desc=Object.entries(descMap).sort((a,b)=>a[1]-b[1]).slice(-15);
+  Plotly.react('chartRankDescricao',[{type:'bar',orientation:'h',x:desc.map(e=>e[1]),y:desc.map(e=>e[0]),marker:{color:'#d19900'}}],{...layout,margin:{t:10,r:10,b:40,l:280}},cfg);
+
+  document.getElementById('tbodyRanking').innerHTML =
+    [...data].sort((a,b)=>(b.valor_num||0)-(a.valor_num||0)).slice(0,20).map(r=>{
+      return `<tr class="clickable" onclick="abrirModal('${esc(r.pae)}','${esc(r.fonte)}','${esc(r.descricao)}','${esc(r.demandante)}')">` +
+        `<td>${r.ordem}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td>` +
+        `<td>${r.item}</td><td>${r.grupo}</td>` +
+        `<td><span class="badge ${pClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td>` +
+        `<td>${r.data_desejada}</td><td>${money(r.valor_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`;
     }).join('');
-    return;
+}
+
+// ============================================================
+// ESTADO DOS CARDS (highlight)
+// ============================================================
+function updateCardStates(){
+  const cPca  = document.getElementById('cardPca');
+  const cFora = document.getElementById('cardFora');
+  const subPca  = document.getElementById('kpiPcaSub');
+  const subFora = document.getElementById('kpiForaSub');
+
+  cPca.classList.toggle('sel-pca',  modo==='pca');
+  cPca.classList.toggle('sel-fora', false);
+  cFora.classList.toggle('sel-fora', modo==='fora');
+  cFora.classList.toggle('sel-pca',  false);
+
+  // atualizar contadores nos cards
+  if(modo==='pca'){
+    document.getElementById('kpiForaPca').textContent = foraData.length;
+    subPca.textContent  = 'Visão ativa — GERAL PCA';
+    subFora.textContent = 'Clique para ver os marcados como NÃO';
+  } else {
+    subPca.textContent  = 'Clique para voltar à visão do PCA';
+    subFora.textContent = 'Visão ativa — Processos 2026';
   }
-
-  // Modo fora do PCA: dados da aba Processos 2026
-  thead.innerHTML=THEAD_FORA_PCA;
-  document.getElementById('tableLabel').textContent='Processos fora do PCA — Processos 2026 (marcados como NÃO)';
-  const tabela=[...foraPcaRows].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0));
-  document.getElementById('tbody').innerHTML=tabela.map(r=>`<tr><td>${r.ordem||''}</td><td>${r.demandante||''}</td><td><strong>${r.descricao||''}</strong></td><td>${r.item||''}</td><td>${r.valor_exibicao||money(r.valor_total_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`).join('');
 }
 
-function abrirModalProcesso(pae,fonte,descricao,demandante){
-  const info=andamentosData[pae]||{};
-  document.getElementById('modalTitle').textContent=descricao||'Processo sem descrição';
-  document.getElementById('modalFonte').innerHTML=`<strong>PAE:</strong> ${pae||'—'} &nbsp;|&nbsp; <strong>Fonte:</strong> ${fonte||'—'}`;
-  document.getElementById('modalGrid').innerHTML=`
-    <div class="modal-field"><div class="modal-label">Demandante</div><div class="modal-value">${demandante||'—'}</div></div>
-    <div class="modal-field"><div class="modal-label">Rito Processual</div><div class="modal-value">${info.rito||'—'}</div></div>
-    <div class="modal-field modal-full"><div class="modal-label">Setor Atual</div><div class="modal-value">${info.setor||'—'}</div></div>
-    <div class="modal-field modal-full"><div class="modal-label">Andamento</div><div class="modal-value">${info.andamento||'—'}</div></div>
-    <div class="modal-field modal-full"><div class="modal-label">Última Tramitação</div><div class="modal-value">${info.ultima||'—'}</div></div>
-  `;
-  const ov=document.getElementById('modalOverlay');
+// ============================================================
+// MODAL
+// ============================================================
+function abrirModal(pae, fonte, descricao, demandante){
+  const info = andamentos[pae] || {};
+  document.getElementById('modalTitle').textContent = descricao||'Processo sem descrição';
+  document.getElementById('modalFonte').innerHTML  = `<strong>PAE:</strong> ${pae||'—'} &nbsp;|&nbsp; <strong>Fonte:</strong> ${fonte||'—'}`;
+  document.getElementById('modalGrid').innerHTML   =
+    `<div class="modal-field"><div class="modal-label">Demandante</div><div class="modal-value">${demandante||'—'}</div></div>` +
+    `<div class="modal-field"><div class="modal-label">Rito Processual</div><div class="modal-value">${info.rito||'—'}</div></div>` +
+    `<div class="modal-field modal-full"><div class="modal-label">Setor Atual</div><div class="modal-value">${info.setor||'—'}</div></div>` +
+    `<div class="modal-field modal-full"><div class="modal-label">Andamento</div><div class="modal-value">${info.andamento||'—'}</div></div>` +
+    `<div class="modal-field modal-full"><div class="modal-label">Última Tramitação</div><div class="modal-value">${info.ultima||'—'}</div></div>`;
+  const ov = document.getElementById('modalOverlay');
   ov.style.display='grid';
-  requestAnimationFrame(()=>ov.style.opacity='1');
+  requestAnimationFrame(()=>{ ov.style.opacity='1'; });
 }
 
-document.getElementById('modalClose').addEventListener('click',()=>{
+document.getElementById('modalClose').addEventListener('click',()=>closeModal());
+document.getElementById('modalOverlay').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
+function closeModal(){
   const ov=document.getElementById('modalOverlay');
   ov.style.opacity='0';
-  setTimeout(()=>{ov.style.display='none';},200);
-});
-document.getElementById('modalOverlay').addEventListener('click',(e)=>{
-  if(e.target===e.currentTarget){
-    const ov=document.getElementById('modalOverlay');
-    ov.style.opacity='0';
-    setTimeout(()=>{ov.style.display='none';},200);
-  }
-});
+  setTimeout(()=>{ ov.style.display='none'; },200);
+}
 
+// ============================================================
+// EVENTOS
+// ============================================================
+// Navegação sidebar
 document.querySelectorAll('.nav button').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
@@ -434,48 +528,54 @@ document.querySelectorAll('.nav button').forEach(btn=>{
   });
 });
 
+// Filtros (apenas afetam a visão GERAL PCA)
 ['search','demandante','qdqq','item','grupo','prioridade','fonte','pae_status'].forEach(id=>{
-  document.getElementById(id).addEventListener('input',applyFilters);
-  document.getElementById(id).addEventListener('change',applyFilters);
+  const el = document.getElementById(id);
+  el.addEventListener('input',  ()=>{ if(modo==='pca') renderPca(); });
+  el.addEventListener('change', ()=>{ if(modo==='pca') renderPca(); });
 });
 
-// Card Processos do PCA — ativa modo 'geral' (GERAL PCA)
-document.getElementById('kpiPcaCard').addEventListener('click',()=>{
-  if(modoAtivo!=='geral'){
-    modoAtivo='geral';
-    applyFilters();
-  }
+// Card Processos do PCA — só troca se não estiver já ativo
+document.getElementById('cardPca').addEventListener('click',()=>{
+  if(modo==='pca') return;
+  modo='pca';
+  renderAll();
 });
 
-// Card Processos fora do PCA — ativa modo 'fora' (Processos 2026)
-document.getElementById('kpiForaPcaCard').addEventListener('click',()=>{
-  modoAtivo= modoAtivo==='fora' ? 'geral' : 'fora';
-  applyFilters();
+// Card Processos fora do PCA — só troca se não estiver já ativo
+document.getElementById('cardFora').addEventListener('click',()=>{
+  if(modo==='fora') return;
+  modo='fora';
+  renderAll();
 });
 
+// Botão Atualizar
 document.getElementById('refreshBtn').addEventListener('click',()=>{
   clearTimeout(autoTimer);
   loadData().then(scheduleRefresh);
 });
 
+// Botão Limpar — reseta filtros e volta ao modo PCA
 document.getElementById('resetBtn').addEventListener('click',()=>{
-  modoAtivo='geral';
   ['search','demandante','qdqq','item','grupo','prioridade','fonte','pae_status'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.value='';
+    document.getElementById(id).value='';
   });
-  applyFilters();
+  modo='pca';
+  renderAll();
 });
 
+// Tema
 document.getElementById('themeBtn').addEventListener('click',()=>{
   const html=document.documentElement;
-  const current=html.getAttribute('data-theme')||'light';
-  html.setAttribute('data-theme',current==='light'?'dark':'light');
+  html.setAttribute('data-theme', html.getAttribute('data-theme')==='light'?'dark':'light');
 });
 
+// ============================================================
+// AUTO-REFRESH
+// ============================================================
 function scheduleRefresh(){
   clearTimeout(autoTimer);
-  autoTimer=setTimeout(()=>loadData().then(scheduleRefresh),REFRESH_INTERVAL);
+  autoTimer = setTimeout(()=>loadData().then(scheduleRefresh), REFRESH_INTERVAL);
 }
 
 loadData().then(scheduleRefresh);
