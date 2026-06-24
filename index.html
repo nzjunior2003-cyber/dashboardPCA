@@ -87,8 +87,8 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
     <article class="card pad">
       <div class="metric-label" id="tableLabel">Detalhamento</div>
       <div class="table-wrap">
-        <table>
-          <thead><tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr></thead>
+        <table id="mainTable">
+          <thead id="mainThead"><tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr></thead>
           <tbody id="tbody"></tbody>
         </table>
       </div>
@@ -123,8 +123,8 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
 const SHEET_ID='1deakLqP8-enEgY384EkFyYedgo5WYSONjvYIBJDwqXE';
 const SHEET_NAME_GERAL='geral';
 const SHEET_NAME_2='Processos 2026';
-const CSV_GERAL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(SHEET_NAME_GERAL)}`;
-const CSV_2=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(SHEET_NAME_2)}`;
+const CSV_GERAL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME_GERAL)}`;
+const CSV_2=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME_2)}`;
 const REFRESH_INTERVAL=60000;
 let allData=[];
 let andamentosData={};
@@ -133,6 +133,9 @@ let foraPcaRows=[];
 let filtroForaPcaAtivo=false;
 let lastFilter={};
 let autoTimer=null;
+
+const THEAD_PADRAO='<tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr>';
+const THEAD_FORA_PCA='<tr><th>Ordem</th><th>Demandante</th><th>Objeto</th><th>Item</th><th>V. Estimado</th><th>Nº PAE</th></tr>';
 
 function norm(s){return(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
 function moneyToFloat(s){if(!s)return 0;return parseFloat(s.replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.'))||0;}
@@ -306,27 +309,22 @@ function renderCharts(data){
   const config={responsive:true,displayModeBar:false};
   const barColor='#01696f';
 
-  // Fonte
   const fonteMap={};data.forEach(r=>{if(r.fonte)fonteMap[r.fonte]=(fonteMap[r.fonte]||0)+(r.valor_total_num||0);});
   const fonteSorted=Object.entries(fonteMap).sort((a,b)=>a[1]-b[1]);
   Plotly.react('chartFonte',[{type:'bar',orientation:'h',x:fonteSorted.map(e=>e[1]),y:fonteSorted.map(e=>e[0]),marker:{color:barColor}}],{...layout,margin:{...layout.margin,l:150}},config);
 
-  // Status PAE
   const comPae=data.filter(r=>r.pae).length;
   const semPae=data.filter(r=>!r.pae).length;
   Plotly.react('chartStatusPae',[{type:'pie',values:[comPae,semPae],labels:['Identificados','Sem identificação'],marker:{colors:[barColor,'#d19900']},hole:.45,textinfo:'percent+label'}],{...layout,showlegend:true,legend:{orientation:'h',y:-0.2}},config);
 
-  // Item
   const itemMap={};data.forEach(r=>{if(r.item)itemMap[r.item]=(itemMap[r.item]||0)+(r.valor_total_num||0);});
   const itemSorted=Object.entries(itemMap).sort((a,b)=>b[1]-a[1]);
   Plotly.react('chartItem',[{type:'bar',x:itemSorted.map(e=>e[0]),y:itemSorted.map(e=>e[1]),marker:{color:'#d19900'}}],{...layout,margin:{t:10,r:10,b:80,l:60},xaxis:{tickangle:-30}},config);
 
-  // Grupo
   const grupoMap={};data.forEach(r=>{if(r.grupo)grupoMap[r.grupo]=(grupoMap[r.grupo]||0)+(r.valor_total_num||0);});
   const grupoSorted=Object.entries(grupoMap).sort((a,b)=>b[1]-a[1]);
   Plotly.react('chartGrupo',[{type:'bar',x:grupoSorted.map(e=>e[0]),y:grupoSorted.map(e=>e[1]),marker:{color:'#437a22'}}],{...layout,margin:{t:10,r:10,b:80,l:60},xaxis:{tickangle:-30}},config);
 
-  // Ranking
   const demMap={};data.forEach(r=>{if(r.demandante)demMap[r.demandante]=(demMap[r.demandante]||0)+(r.valor_total_num||0);});
   const demSorted=Object.entries(demMap).sort((a,b)=>a[1]-b[1]).slice(-15);
   Plotly.react('chartRankDemandante',[{type:'bar',orientation:'h',x:demSorted.map(e=>e[1]),y:demSorted.map(e=>e[0]),marker:{color:barColor}}],{...layout,margin:{t:10,r:10,b:40,l:180}},config);
@@ -335,7 +333,6 @@ function renderCharts(data){
   const descSorted=Object.entries(descMap).sort((a,b)=>a[1]-b[1]).slice(-15);
   Plotly.react('chartRankDescricao',[{type:'bar',orientation:'h',x:descSorted.map(e=>e[1]),y:descSorted.map(e=>e[0]),marker:{color:'#d19900'}}],{...layout,margin:{t:10,r:10,b:40,l:280}},config);
 
-  // Ranking table
   document.getElementById('tbodyRanking').innerHTML=[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0)).slice(0,20).map(r=>{
     const safePae=(r.pae||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
     const safeFonte=(r.fonte||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
@@ -345,25 +342,29 @@ function renderCharts(data){
   }).join('');
 }
 
-function renderTable(data){
-  const tabela=filtroForaPcaAtivo
-    ?[...foraPcaRows].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0))
-    :[...data].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0));
-  const thead=document.querySelector('#visao .table-wrap thead');
-  if(thead){
-    thead.innerHTML=filtroForaPcaAtivo
-      ?'<tr><th>Ordem</th><th>Demandante</th><th>Objeto</th><th>Item</th><th>V. Estimado</th><th>Nº PAE</th></tr>'
-      :'<tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr>';
-  }
-  document.getElementById('tbody').innerHTML=filtroForaPcaAtivo
-    ?tabela.map(r=>`<tr><td>${r.ordem||''}</td><td>${r.demandante||''}</td><td><strong>${r.descricao||''}</strong></td><td>${r.item||''}</td><td>${r.valor_exibicao||money(r.valor_total_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`).join('')
-    :tabela.map(r=>{
+function renderTable(filteredData){
+  const thead=document.getElementById('mainThead');
+
+  // CORREÇÃO: quando filtro desativado, sempre restaurar thead padrão e dados da aba GERAL PCA
+  if(!filtroForaPcaAtivo){
+    thead.innerHTML=THEAD_PADRAO;
+    document.getElementById('tableLabel').textContent='Detalhamento';
+    const tabela=[...filteredData].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0));
+    document.getElementById('tbody').innerHTML=tabela.map(r=>{
       const safePae=(r.pae||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
       const safeFonte=(r.fonte||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
       const safeDesc=(r.descricao||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
       const safeDem=(r.demandante||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
       return `<tr class="clickable" onclick="abrirModalProcesso('${safePae}','${safeFonte}','${safeDesc}','${safeDem}')"><td>${r.ordem??''}</td><td>${r.demandante}</td><td><strong>${r.descricao}</strong></td><td>${r.item}</td><td>${r.grupo}</td><td><span class="badge ${priorityClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td><td>${r.data_desejada}</td><td>${money(r.valor_total_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`;
     }).join('');
+    return;
+  }
+
+  // Modo especial: processos fora do PCA
+  thead.innerHTML=THEAD_FORA_PCA;
+  document.getElementById('tableLabel').textContent='Processos fora do PCA (marcados como NÃO)';
+  const tabela=[...foraPcaRows].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0));
+  document.getElementById('tbody').innerHTML=tabela.map(r=>`<tr><td>${r.ordem||''}</td><td>${r.demandante||''}</td><td><strong>${r.descricao||''}</strong></td><td>${r.item||''}</td><td>${r.valor_exibicao||money(r.valor_total_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`).join('');
 }
 
 function abrirModalProcesso(pae,fonte,descricao,demandante){
@@ -421,6 +422,7 @@ document.getElementById('refreshBtn').addEventListener('click',()=>{
 });
 
 document.getElementById('resetBtn').addEventListener('click',()=>{
+  // CORREÇÃO: garantir que filtroForaPcaAtivo seja desativado antes de chamar applyFilters
   filtroForaPcaAtivo=false;
   ['search','demandante','qdqq','item','grupo','prioridade','fonte','pae_status'].forEach(id=>{
     const el=document.getElementById(id);
