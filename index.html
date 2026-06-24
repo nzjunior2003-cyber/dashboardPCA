@@ -34,6 +34,9 @@ button,input,select{font:inherit}
 .card.sel.sel-fora{border-color:#a13544;box-shadow:0 0 0 2px rgba(161,53,68,.22)}
 .card.sel.sel-fora .metric-label,.card.sel.sel-fora .metric-value{color:#a13544}
 .grid-two{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+/* Ocultar gráficos no modo "Fora do PCA" */
+.charts-hidden{display:none!important}
+#chartsBlock{display:grid;gap:18px}
 .chart{height:360px}.table-wrap{overflow:auto;max-height:560px;border-radius:18px}
 table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top;font-size:.92rem}
 th{position:sticky;top:0;background:var(--color-surface-2);z-index:2}
@@ -117,14 +120,19 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
         <div class="metric-sub" id="kpiForaSub">Aba Processos 2026 (col Y = NÃO)</div>
       </article>
     </div>
-    <div class="grid-two">
-      <article class="card pad"><div class="metric-label">Fonte do recurso</div><div id="chartFonte" class="chart"></div></article>
-      <article class="card pad"><div class="metric-label">Status do PAE</div><div id="chartStatusPae" class="chart"></div></article>
+
+    <!-- Gráficos — ocultos automaticamente no modo "fora" -->
+    <div id="chartsBlock">
+      <div class="grid-two">
+        <article class="card pad"><div class="metric-label">Fonte do recurso</div><div id="chartFonte" class="chart"></div></article>
+        <article class="card pad"><div class="metric-label">Status do PAE</div><div id="chartStatusPae" class="chart"></div></article>
+      </div>
+      <div class="grid-two">
+        <article class="card pad"><div class="metric-label">Valor por Item</div><div id="chartItem" class="chart"></div></article>
+        <article class="card pad"><div class="metric-label">Valor por Grupo</div><div id="chartGrupo" class="chart"></div></article>
+      </div>
     </div>
-    <div class="grid-two">
-      <article class="card pad"><div class="metric-label">Valor por Item</div><div id="chartItem" class="chart"></div></article>
-      <article class="card pad"><div class="metric-label">Valor por Grupo</div><div id="chartGrupo" class="chart"></div></article>
-    </div>
+
     <article class="card pad">
       <div class="metric-label" id="tableLabel">Detalhamento — GERAL PCA</div>
       <div class="table-wrap">
@@ -166,10 +174,8 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
 // ============================================================
 // FONTES DE DADOS
 // ============================================================
-// Planilha 1: GERAL PCA  (aba "GERAL PCA")
 const SHEET_ID_PCA   = '1-XrRG5oLqrcMPLNHePm3KS4671vCp1r0';
 const ABA_PCA        = 'GERAL PCA';
-// Planilha 2: Processos 2026 (aba "Processos 2026", coluna Y = NAO)
 const SHEET_ID_FORA  = '1deakLqP8-enEgY384EkFyYedgo5WYSONjvYIBJDwqXE';
 const ABA_FORA       = 'Processos 2026';
 
@@ -178,12 +184,9 @@ const gviz = (id, aba) =>
 
 const REFRESH_INTERVAL = 60000;
 
-// dados carregados
-let geralData   = [];   // linhas de GERAL PCA
-let foraData    = [];   // linhas de Processos 2026 com col Y = NAO
-let andamentos  = {};   // mapa PAE -> {rito, setor, andamento, ultima}
-
-// modo ativo: 'pca' | 'fora'
+let geralData   = [];
+let foraData    = [];
+let andamentos  = {};
 let modo = 'pca';
 let autoTimer = null;
 
@@ -192,7 +195,7 @@ let autoTimer = null;
 // ============================================================
 const norm  = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 const m2f   = s => { if(!s) return 0; return parseFloat(s.replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.'))||0; };
-const money = v => { if(!v && v!==0) return '—'; return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+const money = v => { if(!v && v!==0) return '—'; return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); };
 const pClass= p => { const n=norm(p); return n==='alta'?'alta':n==='media'||n==='média'?'media':n==='baixa'?'baixa':''; };
 const esc   = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
 
@@ -226,16 +229,14 @@ async function loadData(){
     ]);
     const [tPca, tFora] = await Promise.all([rPca.text(), rFora.text()]);
 
-    // --- Processar Processos 2026 (foraData + andamentos) ---
+    // --- Processar Processos 2026 ---
     const rowsFora = parseCSV(tFora);
     const hFora    = rowsFora[0] || [];
-    // detectar colunas por nome
     const iPaeF  = hFora.findIndex(h => norm(h).includes('pae'));
     const iRito  = hFora.findIndex(h => norm(h).includes('rito'));
     const iSetor = hFora.findIndex(h => norm(h).includes('setor atual') || norm(h).includes('setor_atual'));
     const iAnd   = hFora.findIndex(h => norm(h).includes('andamento') && !norm(h).includes('ultima') && !norm(h).includes('última') && !norm(h).includes('last'));
     const iUlt   = hFora.findIndex(h => h.includes('TRAMITAÇÃO')||h.includes('TRAMITACAO')||h.includes('ÚLTIMA')||h.includes('ULTIMA'));
-    // coluna Y = índice 24 (0-based)
     const iColY  = 24;
 
     andamentos = {};
@@ -245,7 +246,6 @@ async function loadData(){
       if(!r || r.length===0) continue;
       const pae = iPaeF>=0 ? (r[iPaeF]||'').trim() : '';
       const colY = (r[iColY]||'').trim();
-      // guardar andamentos de todos os processos
       if(pae){
         andamentos[pae] = {
           rito     : iRito>=0  ? (r[iRito]||'').trim()||'Não preenchido' : '—',
@@ -254,7 +254,6 @@ async function loadData(){
           ultima   : iUlt>=0   ? (r[iUlt]||'').trim()||'Sem registro'  : '—'
         };
       }
-      // linha fora do PCA: col Y normalizada = 'nao'
       if(norm(colY) === 'nao'){
         foraData.push({
           ordem     : (r[0]||'').trim(),
@@ -369,17 +368,24 @@ function renderAll(){
   updateCardStates();
 }
 
+function setChartsVisible(visible){
+  const block = document.getElementById('chartsBlock');
+  if(visible){
+    block.classList.remove('charts-hidden');
+  } else {
+    block.classList.add('charts-hidden');
+  }
+}
+
 function renderPca(){
+  setChartsVisible(true);
   const data = filteredGeral();
-  // KPIs
   document.getElementById('kpiRegistros').textContent = data.length;
   document.getElementById('kpiValor').textContent     = money(data.reduce((s,r)=>s+(r.valor_num||0),0));
   document.getElementById('kpiAlta').textContent      = data.filter(r=>norm(r.prioridade)==='alta').length;
   document.getElementById('kpiPae').textContent       = data.filter(r=>r.pae).length;
   document.getElementById('countInfo').textContent    = data.length+' de '+geralData.length+' registros exibidos';
-  // Charts
   renderChartsPca(data);
-  // Tabela
   document.getElementById('tableLabel').textContent = 'Detalhamento — GERAL PCA';
   document.getElementById('mainThead').innerHTML =
     '<tr><th>Ordem</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Grupo</th><th>Prioridade</th><th>Data desejada</th><th>Valor do recurso</th><th>PAE</th></tr>';
@@ -391,16 +397,14 @@ function renderPca(){
         `<td><span class="badge ${pClass(r.prioridade)}">${r.prioridade||'N/I'}</span></td>` +
         `<td>${r.data_desejada}</td><td>${money(r.valor_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`;
     }).join('');
-  // Ranking tab
   renderRanking(data);
 }
 
 function renderFora(){
+  setChartsVisible(false);
   const data = foraData;
-  // KPIs (apenas o card fora fica com o número; os demais mantêm o último valor do PCA para contexto)
   document.getElementById('kpiForaPca').textContent   = data.length;
   document.getElementById('countInfo').textContent    = data.length+' processos fora do PCA (Processos 2026)';
-  // Tabela
   document.getElementById('tableLabel').textContent = 'Processos fora do PCA — Processos 2026 (col Y = NÃO)';
   document.getElementById('mainThead').innerHTML =
     '<tr><th>Ordem</th><th>PAE</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Fonte</th><th>V. Estimado</th></tr>';
@@ -409,11 +413,6 @@ function renderFora(){
       return `<tr><td>${r.ordem}</td><td><strong>${r.pae||'-'}</strong></td><td>${r.demandante}</td>` +
         `<td><strong>${r.descricao}</strong></td><td>${r.item}</td><td>${r.fonte}</td><td>${r.valor_str||money(r.valor_num)}</td></tr>`;
     }).join('');
-  // Charts ficam em branco (sem dado equivalente)
-  ['chartFonte','chartStatusPae','chartItem','chartGrupo'].forEach(id=>{
-    Plotly.purge(id);
-    document.getElementById(id).innerHTML = '<div style="display:grid;place-items:center;height:100%;color:var(--color-text-muted);font-size:.9rem;">Gráficos disponíveis apenas na visão GERAL PCA</div>';
-  });
 }
 
 function renderChartsPca(data){
@@ -464,7 +463,7 @@ function renderRanking(data){
 }
 
 // ============================================================
-// ESTADO DOS CARDS (highlight)
+// ESTADO DOS CARDS
 // ============================================================
 function updateCardStates(){
   const cPca  = document.getElementById('cardPca');
@@ -477,7 +476,6 @@ function updateCardStates(){
   cFora.classList.toggle('sel-fora', modo==='fora');
   cFora.classList.toggle('sel-pca',  false);
 
-  // atualizar contadores nos cards
   if(modo==='pca'){
     document.getElementById('kpiForaPca').textContent = foraData.length;
     subPca.textContent  = 'Visão ativa — GERAL PCA';
@@ -517,7 +515,6 @@ function closeModal(){
 // ============================================================
 // EVENTOS
 // ============================================================
-// Navegação sidebar
 document.querySelectorAll('.nav button').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
@@ -528,34 +525,29 @@ document.querySelectorAll('.nav button').forEach(btn=>{
   });
 });
 
-// Filtros (apenas afetam a visão GERAL PCA)
 ['search','demandante','qdqq','item','grupo','prioridade','fonte','pae_status'].forEach(id=>{
   const el = document.getElementById(id);
   el.addEventListener('input',  ()=>{ if(modo==='pca') renderPca(); });
   el.addEventListener('change', ()=>{ if(modo==='pca') renderPca(); });
 });
 
-// Card Processos do PCA — só troca se não estiver já ativo
 document.getElementById('cardPca').addEventListener('click',()=>{
   if(modo==='pca') return;
   modo='pca';
   renderAll();
 });
 
-// Card Processos fora do PCA — só troca se não estiver já ativo
 document.getElementById('cardFora').addEventListener('click',()=>{
   if(modo==='fora') return;
   modo='fora';
   renderAll();
 });
 
-// Botão Atualizar
 document.getElementById('refreshBtn').addEventListener('click',()=>{
   clearTimeout(autoTimer);
   loadData().then(scheduleRefresh);
 });
 
-// Botão Limpar — reseta filtros e volta ao modo PCA
 document.getElementById('resetBtn').addEventListener('click',()=>{
   ['search','demandante','qdqq','item','grupo','prioridade','fonte','pae_status'].forEach(id=>{
     document.getElementById(id).value='';
@@ -564,7 +556,6 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
   renderAll();
 });
 
-// Tema
 document.getElementById('themeBtn').addEventListener('click',()=>{
   const html=document.documentElement;
   html.setAttribute('data-theme', html.getAttribute('data-theme')==='light'?'dark':'light');
