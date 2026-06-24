@@ -24,8 +24,14 @@ button,input,select{font:inherit}
 .main{padding:24px;display:grid;gap:18px}.topbar{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}.title h2{margin:0;font-size:1.85rem}.title p{margin:6px 0 0;color:var(--color-text-muted)}
 .cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
 .card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius)}.pad{padding:18px}.metric-label{color:var(--color-text-muted);font-size:.84rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}.metric-value{font-size:1.9rem;font-weight:800;margin-top:8px}.metric-sub{margin-top:6px;color:var(--color-text-muted);font-size:.92rem}
+/* Card clicável — estado padrão */
 .card.clickable-card{cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s}
 .card.clickable-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+/* Card PROCESSOS DO PCA ativo (modo padrão ativo) */
+.card.clickable-card.active-pca{border-color:var(--color-primary);box-shadow:0 0 0 2px rgba(1,105,111,.25)}
+.card.clickable-card.active-pca .metric-label{color:var(--color-primary)}
+.card.clickable-card.active-pca .metric-value{color:var(--color-primary)}
+/* Card FORA DO PCA ativo */
 .card.clickable-card.active-filter{border-color:#a13544;box-shadow:0 0 0 2px rgba(161,53,68,.25)}
 .card.clickable-card.active-filter .metric-label{color:#a13544}
 .card.clickable-card.active-filter .metric-value{color:#a13544}
@@ -66,11 +72,17 @@ tr.clickable{cursor:pointer;transition:background .2s}tr.clickable:hover{backgro
   <div class="topbar"><div class="title"><h2>Planejamento consolidado</h2><p>Dados lidos diretamente da Google Sheet, com atualização automática e navegação por páginas.</p></div><div class="small"><div id="countInfo"></div><div id="updatedInfo"></div></div></div>
   <section id="visao" class="section active">
     <div class="cards">
-      <article class="card pad"><div class="metric-label">Registros</div><div class="metric-value" id="kpiRegistros"></div><div class="metric-sub">Itens filtrados na visualização</div></article>
+      <!-- Card 1: Processos do PCA — clique restaura visão padrão (GERAL PCA) -->
+      <article class="card pad clickable-card" id="kpiPcaCard" title="Clique para ver os Processos do PCA">
+        <div class="metric-label">Processos do PCA</div>
+        <div class="metric-value" id="kpiRegistros"></div>
+        <div class="metric-sub" id="kpiPcaSub">Itens filtrados na visualização</div>
+      </article>
       <article class="card pad"><div class="metric-label">Valor do recurso</div><div class="metric-value" id="kpiValor"></div><div class="metric-sub">Soma do valor do recurso</div></article>
       <article class="card pad"><div class="metric-label">Prioridade alta</div><div class="metric-value" id="kpiAlta"></div><div class="metric-sub">Quantidade de demandas críticas</div></article>
       <article class="card pad"><div class="metric-label">Com PAE</div><div class="metric-value" id="kpiPae"></div><div class="metric-sub">Processos já identificados</div></article>
-      <article class="card pad clickable-card" id="kpiForaPcaCard" title="Clique para filtrar processos fora do PCA">
+      <!-- Card 5: Processos fora do PCA — clique exibe dados da aba "Processos 2026" -->
+      <article class="card pad clickable-card" id="kpiForaPcaCard" title="Clique para ver os Processos fora do PCA (Processos 2026)">
         <div class="metric-label">Processos fora do PCA</div>
         <div class="metric-value" id="kpiForaPca">—</div>
         <div class="metric-sub" id="kpiForaPcaSub">Clique para filtrar os marcados como NÃO</div>
@@ -130,7 +142,8 @@ let allData=[];
 let andamentosData={};
 let foraPcaData={};
 let foraPcaRows=[];
-let filtroForaPcaAtivo=false;
+// Modo: 'geral' = Processos do PCA (GERAL PCA) | 'fora' = Processos fora do PCA (Processos 2026)
+let modoAtivo='geral';
 let lastFilter={};
 let autoTimer=null;
 
@@ -285,8 +298,11 @@ function applyFilters(){
   updateKPIs(filtered);
   renderCharts(filtered);
   renderTable(filtered);
-  updateForaPcaCardState();
-  document.getElementById('countInfo').textContent=filtered.length+' de '+allData.length+' registros exibidos';
+  updateCardStates();
+  const label=modoAtivo==='fora'
+    ?foraPcaRows.length+' de '+foraPcaRows.length+' registros exibidos (Processos 2026)'
+    :filtered.length+' de '+allData.length+' registros exibidos';
+  document.getElementById('countInfo').textContent=label;
 }
 
 function updateKPIs(data){
@@ -297,11 +313,23 @@ function updateKPIs(data){
   document.getElementById('kpiForaPca').textContent=foraPcaRows.length;
 }
 
-function updateForaPcaCardState(){
-  const card=document.getElementById('kpiForaPcaCard');
-  const sub=document.getElementById('kpiForaPcaSub');
-  card.classList.toggle('active-filter',filtroForaPcaAtivo);
-  sub.textContent=filtroForaPcaAtivo?'Filtro ativo — exibindo apenas processos com NÃO no PCA':'Clique para filtrar os marcados como NÃO';
+function updateCardStates(){
+  const cardPca=document.getElementById('kpiPcaCard');
+  const cardFora=document.getElementById('kpiForaPcaCard');
+  const subPca=document.getElementById('kpiPcaSub');
+  const subFora=document.getElementById('kpiForaPcaSub');
+
+  // Card Processos do PCA: ativo (destaque verde) quando modoAtivo='geral'
+  cardPca.classList.toggle('active-pca', modoAtivo==='geral');
+  subPca.textContent=modoAtivo==='geral'
+    ?'Visão ativa — GERAL PCA'
+    :'Clique para voltar à visão do PCA';
+
+  // Card Processos fora do PCA: ativo (destaque vermelho) quando modoAtivo='fora'
+  cardFora.classList.toggle('active-filter', modoAtivo==='fora');
+  subFora.textContent=modoAtivo==='fora'
+    ?'Filtro ativo — exibindo Processos 2026 (NÃO no PCA)'
+    :'Clique para ver os marcados como NÃO';
 }
 
 function renderCharts(data){
@@ -345,10 +373,10 @@ function renderCharts(data){
 function renderTable(filteredData){
   const thead=document.getElementById('mainThead');
 
-  // CORREÇÃO: quando filtro desativado, sempre restaurar thead padrão e dados da aba GERAL PCA
-  if(!filtroForaPcaAtivo){
+  if(modoAtivo==='geral'){
+    // Modo padrão: dados da aba GERAL PCA
     thead.innerHTML=THEAD_PADRAO;
-    document.getElementById('tableLabel').textContent='Detalhamento';
+    document.getElementById('tableLabel').textContent='Detalhamento — GERAL PCA';
     const tabela=[...filteredData].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0));
     document.getElementById('tbody').innerHTML=tabela.map(r=>{
       const safePae=(r.pae||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
@@ -360,9 +388,9 @@ function renderTable(filteredData){
     return;
   }
 
-  // Modo especial: processos fora do PCA
+  // Modo fora do PCA: dados da aba Processos 2026
   thead.innerHTML=THEAD_FORA_PCA;
-  document.getElementById('tableLabel').textContent='Processos fora do PCA (marcados como NÃO)';
+  document.getElementById('tableLabel').textContent='Processos fora do PCA — Processos 2026 (marcados como NÃO)';
   const tabela=[...foraPcaRows].sort((a,b)=>(b.valor_total_num||0)-(a.valor_total_num||0));
   document.getElementById('tbody').innerHTML=tabela.map(r=>`<tr><td>${r.ordem||''}</td><td>${r.demandante||''}</td><td><strong>${r.descricao||''}</strong></td><td>${r.item||''}</td><td>${r.valor_exibicao||money(r.valor_total_num)}</td><td><strong>${r.pae||'-'}</strong></td></tr>`).join('');
 }
@@ -411,8 +439,17 @@ document.querySelectorAll('.nav button').forEach(btn=>{
   document.getElementById(id).addEventListener('change',applyFilters);
 });
 
+// Card Processos do PCA — ativa modo 'geral' (GERAL PCA)
+document.getElementById('kpiPcaCard').addEventListener('click',()=>{
+  if(modoAtivo!=='geral'){
+    modoAtivo='geral';
+    applyFilters();
+  }
+});
+
+// Card Processos fora do PCA — ativa modo 'fora' (Processos 2026)
 document.getElementById('kpiForaPcaCard').addEventListener('click',()=>{
-  filtroForaPcaAtivo=!filtroForaPcaAtivo;
+  modoAtivo= modoAtivo==='fora' ? 'geral' : 'fora';
   applyFilters();
 });
 
@@ -422,8 +459,7 @@ document.getElementById('refreshBtn').addEventListener('click',()=>{
 });
 
 document.getElementById('resetBtn').addEventListener('click',()=>{
-  // CORREÇÃO: garantir que filtroForaPcaAtivo seja desativado antes de chamar applyFilters
-  filtroForaPcaAtivo=false;
+  modoAtivo='geral';
   ['search','demandante','qdqq','item','grupo','prioridade','fonte','pae_status'].forEach(id=>{
     const el=document.getElementById(id);
     el.value='';
