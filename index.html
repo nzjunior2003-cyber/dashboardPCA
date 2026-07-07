@@ -256,14 +256,15 @@ async function loadData(){
       }
       if(norm(colY) === 'nao'){
         foraData.push({
-          ordem     : (r[0]||'').trim(),
-          pae       : pae,
-          descricao : (r[2]||'').trim(),
-          demandante: (r[7]||'').trim(),
-          item      : (r[8]||'').trim(),
-          fonte     : (r[9]||'').trim(),
-          valor_num : m2f((r[11]||'').trim()),
-          valor_str : (r[11]||'').trim()
+          ordem      : (r[0]||'').trim(),
+          pae        : pae,
+          descricao  : (r[2]||'').trim(),
+          demandante : (r[7]||'').trim(),
+          setor_atual: (r[17]||'').trim(),
+          item       : (r[8]||'').trim(),
+          fonte      : (r[9]||'').trim(),
+          valor_num  : m2f((r[11]||'').trim()),
+          valor_str  : (r[11]||'').trim()
         });
       }
     }
@@ -407,10 +408,11 @@ function renderFora(){
   document.getElementById('countInfo').textContent    = data.length+' processos fora do PCA (Processos 2026)';
   document.getElementById('tableLabel').textContent = 'Processos fora do PCA — Processos 2026 (col Y = NÃO)';
   document.getElementById('mainThead').innerHTML =
-    '<tr><th>Ordem</th><th>PAE</th><th>Demandante</th><th>Descrição</th><th>Item</th><th>Fonte</th><th>V. Estimado</th></tr>';
+    '<tr><th>Ordem</th><th>PAE</th><th>Demandante</th><th>Setor Atual</th><th>Descrição</th><th>Item</th><th>Fonte</th><th>V. Estimado</th></tr>';
   document.getElementById('tbody').innerHTML =
     [...data].sort((a,b)=>(b.valor_num||0)-(a.valor_num||0)).map(r=>{
       return `<tr><td>${r.ordem}</td><td><strong>${r.pae||'-'}</strong></td><td>${r.demandante}</td>` +
+        `<td>${r.setor_atual||'-'}</td>` +
         `<td><strong>${r.descricao}</strong></td><td>${r.item}</td><td>${r.fonte}</td><td>${r.valor_str||money(r.valor_num)}</td></tr>`;
     }).join('');
 }
